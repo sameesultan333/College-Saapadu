@@ -1,0 +1,1011 @@
+/* ============================================================================
+   BAMBOO CANTEEN — THEME
+   Mirrors theme/theme.js. See that file's header comment for the full
+   rationale. Short version:
+
+     --bc-*        the real design tokens (source of truth for this file)
+     --dash-* /
+     --login-*     legacy aliases, 1:1 pointers into the --bc-* tokens
+     --<generic>*  compatibility bridge for the redesigned feature modules
+                    (ActiveOrdersTab etc.) — aliases only, no new literals
+
+   REDESIGN NOTES (values refined, contract unchanged):
+   - Radii sharpened: md 10→8, lg 16→12, xl 22→16. Large radii read as
+     consumer-bloat; tighter radii read as classic operations software.
+   - Type weights rebalanced: display/metric 800→700, section/card/eyebrow
+     650/700→600, body/secondary 500→400. Inter at 400/15px is crisper than
+     500; hierarchy now comes from size + color, not weight inflation.
+     (650 was also synthesizing — static Inter has no 650; 600 is real.)
+   - Page surface deepened one step so white cards separate on warmth, not
+     shadow. Card shadows are now layered/soft instead of single-drop.
+   - New: ambient background wash, focus-ring token, caption size,
+     bc-* primitives, refined scrollbars, text-wrap balance.
+
+   Import once globally (src/index.js).
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* If fonts are already preloaded in public/index.html with preconnect,
+   remove the line above and keep the preload there (faster). */
+
+:root {
+  color-scheme: light;
+  accent-color: var(--bc-color-brand-primary);
+
+  /* ============================ 1. COLOR ============================ */
+
+  /* Brand — deep forest green (primary), warm sage (secondary),
+     brass/gold (accent, icon & border use only), terracotta (action,
+     reserved for important food/order actions). */
+  --bc-color-brand-primary: #1e3b2b;
+  --bc-color-brand-primary-light: #2f5940;
+  --bc-color-brand-primary-hover: #17301f;
+  --bc-color-brand-primary-pressed: #0f2317;
+  --bc-color-brand-primary-soft: #e3ebe1;
+  --bc-color-brand-primary-faint: #f2f6f0;
+  --bc-color-brand-primary-hover-bg: rgba(30, 59, 43, 0.05);
+  --bc-color-brand-primary-icon-bg: rgba(30, 59, 43, 0.1);
+
+  --bc-color-brand-secondary: #7c9473;
+  --bc-color-brand-secondary-hover: #6c8264;
+  --bc-color-brand-secondary-strong: #5e7256;
+  --bc-color-brand-secondary-soft: #edf1e8;
+  --bc-color-brand-secondary-faint: #f6f8f3;
+
+  --bc-color-brand-accent: #b08d4f;
+  --bc-color-brand-accent-hover: #9c7940;
+  --bc-color-brand-accent-strong: #7c6132;
+  --bc-color-brand-accent-soft: #f5eedc;
+  --bc-color-brand-accent-faint: #faf6ec;
+
+  --bc-color-brand-action: #b14f29;
+  --bc-color-brand-action-hover: #95401f;
+  --bc-color-brand-action-pressed: #7e351a;
+  --bc-color-brand-action-soft: #f6e4d8;
+  --bc-color-brand-action-faint: #fcf1ea;
+
+  /* Surface */
+  --bc-color-surface-page: #f7f1e5;
+  --bc-color-surface-page-alt: #fcf8ef;
+  --bc-color-surface-base: #fffdf9;
+  --bc-color-surface-raised: #ffffff;
+  --bc-color-surface-sunken: #f1eadc;
+  --bc-color-surface-overlay: rgba(43, 35, 28, 0.5);
+  --bc-color-surface-cool: #eef4f7;
+  --bc-color-surface-fresh: #edf5ea;
+  --bc-color-surface-veg: #e6f2e3;
+  --bc-color-surface-nonveg: #fbebe7;
+  --bc-color-surface-warning-alt: #fcf3e4;
+
+  /* Text — 4-step hierarchy. `faint` is below AA and is for
+     disabled/placeholder text only, never for real copy. */
+  --bc-color-text-primary: #2b231c;
+  --bc-color-text-secondary: #5b4f41;
+  --bc-color-text-muted: #6e6455;
+  --bc-color-text-faint: #a79c8c;
+  --bc-color-text-inverse: #fffdf9;
+  --bc-color-text-brand: #1e3b2b;
+
+  /* Border — `subtle`/`default` are decorative dividers; `strong` is for
+     interactive boundaries (inputs, focus, actionable edges). */
+  --bc-color-border-subtle: #eae1cd;
+  --bc-color-border-default: #ddd0b5;
+  --bc-color-border-strong: #a8916a;
+
+  /* Focus ring — the single source for focus shadows on inputs/controls.
+     The visible keyboard indicator is the 2px outline in :focus-visible. */
+  --bc-focus-ring-color: rgba(30, 59, 43, 0.14);
+  --bc-focus-ring: 0 0 0 3px var(--bc-focus-ring-color);
+
+  /* Semantic */
+  --bc-color-success: #3a6f44;
+  --bc-color-success-light: #5b9563;
+  --bc-color-success-strong: #254c2d;
+  --bc-color-success-bg: #e7f2e5;
+  --bc-color-success-border: #c7e0c1;
+  --bc-color-success-icon-bg: rgba(58, 111, 68, 0.12);
+
+  --bc-color-warning: #8c6a17;
+  --bc-color-warning-light: #c99a3e;
+  --bc-color-warning-strong: #5c4610;
+  --bc-color-warning-bg: #fbf0da;
+  --bc-color-warning-border: #eedba6;
+
+  --bc-color-danger: #a33526;
+  --bc-color-danger-light: #c97267;
+  --bc-color-danger-strong: #6e2419;
+  --bc-color-danger-bg: #fbeae6;
+  --bc-color-danger-border: #efc6ba;
+
+  --bc-color-info: #3e6e8e;
+  --bc-color-info-light: #5d93ad;
+  --bc-color-info-strong: #25475c;
+  --bc-color-info-bg: #e7f1f6;
+  --bc-color-info-border: #c4dce6;
+  --bc-color-info-icon-bg: rgba(62, 110, 142, 0.1);
+
+  /* Neutral */
+  --bc-color-neutral-bg: #f1eee7;
+  --bc-color-neutral-bg-strong: #e4dfd3;
+  --bc-color-neutral-text: #7a7266;
+  --bc-color-neutral-border: #d8d0bf;
+  --bc-color-neutral-border-strong: #c7bfaf;
+
+  /* Utility */
+  --bc-color-black: #000000;
+  --bc-color-white: #ffffff;
+  --bc-color-white-alpha-05: rgba(255, 255, 255, 0.05);
+  --bc-color-white-alpha-10: rgba(255, 255, 255, 0.1);
+  --bc-color-white-alpha-20: rgba(255, 255, 255, 0.2);
+  --bc-color-white-alpha-25: rgba(255, 255, 255, 0.25);
+  --bc-color-white-alpha-30: rgba(255, 255, 255, 0.3);
+  --bc-color-white-alpha-40: rgba(255, 255, 255, 0.4);
+  --bc-color-white-alpha-80: rgba(255, 255, 255, 0.8);
+
+  --bc-glow-primary-toast: 0 12px 32px rgba(30, 59, 43, 0.22);
+  --bc-glow-success-toast: 0 8px 24px rgba(58, 111, 68, 0.28);
+
+  /* Login (dark, atmospheric — kept as its own palette) */
+  --bc-login-color-bg: #0d1210;
+  --bc-login-color-panel: rgba(18, 24, 20, 0.72);
+  --bc-login-color-border: rgba(255, 255, 255, 0.08);
+  --bc-login-color-accent-1: #e3b559;
+  --bc-login-color-accent-2: #c98b3e;
+  --bc-login-color-accent-3: #7fae7b;
+  --bc-login-color-text: #fffdf9;
+  --bc-login-color-text-muted: rgba(255, 253, 249, 0.62);
+  --bc-login-color-text-label: rgba(255, 253, 249, 0.82);
+  --bc-login-color-text-faint: rgba(255, 253, 249, 0.42);
+  --bc-login-color-field: rgba(255, 255, 255, 0.05);
+  --bc-login-color-field-border: rgba(255, 255, 255, 0.12);
+  --bc-login-color-error: #e2645a;
+  --bc-login-color-error-light: #f2a9a2;
+  --bc-login-color-error-bg: rgba(226, 100, 90, 0.12);
+  --bc-login-color-error-border: rgba(226, 100, 90, 0.32);
+
+  /* ========================= 2. TYPOGRAPHY =========================== */
+
+  --bc-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --bc-font-size-display: clamp(2rem, 1.6rem + 1.6vw, 2.5rem);
+  --bc-font-weight-display: 700;
+  --bc-font-size-page-heading: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --bc-font-weight-page-heading: 700;
+  --bc-font-size-section-heading: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  --bc-font-weight-section-heading: 600;
+  --bc-font-size-card-title: 0.9375rem;
+  --bc-font-weight-card-title: 600;
+  --bc-font-size-body: 0.9375rem;
+  --bc-font-weight-body: 400;
+  --bc-font-size-secondary: 0.8125rem;
+  --bc-font-weight-secondary: 400;
+  --bc-font-size-caption: 0.75rem;
+  --bc-font-size-metric: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+  --bc-font-weight-metric: 700;
+  --bc-font-size-eyebrow: 0.6875rem;
+  --bc-font-weight-eyebrow: 600;
+
+  --bc-letter-spacing-tighter: -0.02em;
+  --bc-letter-spacing-tight: -0.01em;
+  --bc-letter-spacing-normal: 0;
+  --bc-letter-spacing-eyebrow: 0.08em;
+
+  --bc-line-height-tight: 1.2;
+  --bc-line-height-normal: 1.5;
+  --bc-line-height-relaxed: 1.65;
+
+  --bc-login-font-family: 'Outfit', sans-serif;
+  --bc-login-font-family-mono: 'JetBrains Mono', monospace;
+
+  /* =========================== 3. SPACING ============================ */
+
+  --bc-space-2: 2px;
+  --bc-space-4: 4px;
+  --bc-space-8: 8px;
+  --bc-space-12: 12px;
+  --bc-space-16: 16px;
+  --bc-space-20: 20px;
+  --bc-space-24: 24px;
+  --bc-space-32: 32px;
+  --bc-space-40: 40px;
+  --bc-space-56: 56px;
+  --bc-space-72: 72px;
+
+  --bc-space-icon-gap: var(--bc-space-8);
+  --bc-space-control-x: var(--bc-space-16);
+  --bc-space-control-y: var(--bc-space-8);
+  --bc-space-card-padding: var(--bc-space-20);
+  --bc-space-card-gap: var(--bc-space-16);
+  --bc-space-section-gap: var(--bc-space-32);
+  --bc-space-page-gap: var(--bc-space-40);
+  --bc-space-page-padding: clamp(1.25rem, 3vw, 2.75rem);
+  --bc-space-mobile-padding: var(--bc-space-16);
+
+  /* ============================ 4. RADIUS ============================ */
+
+  --bc-radius-sm: 6px;
+  --bc-radius-md: 8px;
+  --bc-radius-lg: 12px;
+  --bc-radius-xl: 16px;
+  --bc-radius-pill: 999px;
+  --bc-radius-round: 50%;
+
+  --bc-login-radius-md: 12px;
+  --bc-login-radius-lg: 16px;
+  --bc-login-radius-xl: 24px;
+
+  /* ============================ 5. SHADOW ============================ */
+
+  --bc-shadow-none: none;
+  --bc-shadow-subtle: 0 1px 2px rgba(43, 35, 28, 0.06);
+  --bc-shadow-card: 0 1px 2px rgba(43, 35, 28, 0.05), 0 4px 14px rgba(43, 35, 28, 0.05);
+  --bc-shadow-card-hover: 0 2px 4px rgba(43, 35, 28, 0.05), 0 10px 24px rgba(43, 35, 28, 0.1);
+  --bc-shadow-elevated: 0 12px 32px rgba(43, 35, 28, 0.14);
+  --bc-shadow-overlay: 0 24px 64px rgba(20, 16, 12, 0.3);
+  --bc-shadow-header: 0 2px 12px rgba(30, 59, 43, 0.1);
+  --bc-shadow-tab-nav: 0 1px 0 rgba(43, 35, 28, 0.06);
+
+  --bc-login-shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --bc-login-shadow-logo: 0 10px 28px rgba(227, 181, 89, 0.28);
+  --bc-login-shadow-button: 0 6px 18px rgba(177, 79, 41, 0.3);
+
+  /* ============================ 6. BORDER ============================= */
+
+  --bc-border-width-thin: 1px;
+  --bc-border-width-default: 1px;
+  --bc-border-width-thick: 2px;
+
+  /* ============================ 7. LAYOUT ============================= */
+
+  --bc-layout-sidebar-width: 264px;
+  --bc-layout-header-height: 92px;
+  --bc-layout-content-max-width: 1440px;
+  --bc-layout-page-padding: var(--bc-space-page-padding);
+  --bc-layout-section-gap: var(--bc-space-section-gap);
+  --bc-layout-card-gap: var(--bc-space-card-gap);
+  --bc-layout-mobile-padding: var(--bc-space-mobile-padding);
+
+  /* ============================ 8. MOTION ============================= */
+
+  --bc-motion-duration-fast: 120ms;
+  --bc-motion-duration-normal: 200ms;
+  --bc-motion-duration-slow: 320ms;
+  --bc-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --bc-motion-easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --bc-motion-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ============================ 9. Z-INDEX ============================ */
+
+  --bc-z-base: 0;
+  --bc-z-dropdown: 100;
+  --bc-z-sticky: 200;
+  --bc-z-header: 300;
+  --bc-z-overlay: 400;
+  --bc-z-modal: 500;
+  --bc-z-toast: 600;
+  --bc-z-tooltip: 700;
+
+  /* ====================================================================
+     LEGACY COMPATIBILITY ALIASES
+     Old --dash-* / --login-* names, each pointing at its --bc-* token
+     above. Kept so existing per-component stylesheets render unchanged.
+     ==================================================================== */
+
+  --dash-color-primary: var(--bc-color-brand-primary);
+  --dash-color-primary-light: var(--bc-color-brand-primary-light);
+  --dash-color-primary-hover: var(--bc-color-brand-primary-hover);
+  --dash-color-bg-gradient-start: var(--bc-color-surface-page);
+  --dash-color-bg-gradient-end: var(--bc-color-surface-page-alt);
+  --dash-color-text: var(--bc-color-text-primary);
+  --dash-color-text-muted: var(--bc-color-text-muted);
+  --dash-color-text-faint: var(--bc-color-text-faint);
+  --dash-color-text-label: var(--bc-color-text-secondary);
+  --dash-color-border: var(--bc-color-border-subtle);
+  --dash-color-white: var(--bc-color-surface-raised);
+
+  --dash-color-success: var(--bc-color-success);
+  --dash-color-success-light: var(--bc-color-success-light);
+  --dash-color-success-dark: var(--bc-color-success-strong);
+  --dash-color-success-darker: #1a3820;
+  --dash-color-success-bg: var(--bc-color-success-bg);
+  --dash-color-success-border: var(--bc-color-success-border);
+
+  --dash-color-info: var(--bc-color-info);
+  --dash-color-info-light: var(--bc-color-info-light);
+  --dash-color-info-bg: var(--bc-color-info-bg);
+  --dash-color-info-dark: var(--bc-color-info-strong);
+
+  --dash-color-warning: var(--bc-color-warning);
+  --dash-color-warning-light: var(--bc-color-warning-light);
+  --dash-color-warning-bg: var(--bc-color-warning-bg);
+  --dash-color-warning-bg2: var(--bc-color-warning-border);
+
+  --dash-color-danger: var(--bc-color-danger);
+  --dash-color-danger-dark: var(--bc-color-danger-strong);
+  --dash-color-danger-light: var(--bc-color-danger-light);
+  --dash-color-danger-bg: var(--bc-color-danger-bg);
+
+  --dash-color-neutral-bg: var(--bc-color-neutral-bg);
+  --dash-color-neutral-bg2: var(--bc-color-neutral-bg-strong);
+  --dash-color-neutral-text: var(--bc-color-neutral-text);
+  --dash-color-neutral-border: var(--bc-color-neutral-border);
+  --dash-color-neutral-border2: var(--bc-color-neutral-border-strong);
+
+  --dash-font-family: var(--bc-font-family);
+
+  --dash-radius-sm: var(--bc-radius-sm);
+  --dash-radius-md: var(--bc-radius-md);
+  --dash-radius-lg: var(--bc-radius-lg);
+  --dash-radius-xl: var(--bc-radius-lg);
+  --dash-radius-xxl: var(--bc-radius-xl);
+  --dash-radius-pill: var(--bc-radius-pill);
+  --dash-radius-round: var(--bc-radius-round);
+
+  --dash-shadow-card: var(--bc-shadow-card);
+  --dash-shadow-card-hover: var(--bc-shadow-card-hover);
+  --dash-shadow-header: var(--bc-shadow-header);
+  --dash-shadow-modal: var(--bc-shadow-overlay);
+  --dash-shadow-tab-nav: var(--bc-shadow-tab-nav);
+  --dash-color-primary-hover-bg: var(--bc-color-brand-primary-hover-bg);
+
+  --login-color-bg: var(--bc-login-color-bg);
+  --login-color-panel: var(--bc-login-color-panel);
+  --login-color-border: var(--bc-login-color-border);
+  --login-color-accent-1: var(--bc-login-color-accent-1);
+  --login-color-accent-2: var(--bc-login-color-accent-2);
+  --login-color-accent-3: var(--bc-login-color-accent-3);
+  --login-color-text: var(--bc-login-color-text);
+  --login-color-text-muted: var(--bc-login-color-text-muted);
+  --login-color-error: var(--bc-login-color-error);
+  --login-color-error-light: var(--bc-login-color-error-light);
+  --login-color-error-bg: var(--bc-login-color-error-bg);
+  --login-color-error-border: var(--bc-login-color-error-border);
+
+  --login-font-family: var(--bc-login-font-family);
+  --login-font-family-mono: var(--bc-login-font-family-mono);
+
+  --login-radius-md: var(--bc-login-radius-md);
+  --login-radius-lg: var(--bc-login-radius-lg);
+  --login-radius-xl: var(--bc-login-radius-xl);
+
+  /* ====================================================================
+     GENERIC COMPATIBILITY BRIDGE
+     Short names consumed by the redesigned feature modules
+     (ActiveOrdersTab.tsx and siblings). Aliases only — every value
+     resolves to a --bc-* token. New CSS should still prefer --bc-*.
+     ==================================================================== */
+
+  /* Surfaces & text */
+  --paper: var(--bc-color-surface-raised);
+  --ivory: var(--bc-color-surface-page);
+  --cream: var(--bc-color-surface-sunken);
+  --ink: var(--bc-color-text-primary);
+  --ink-2: var(--bc-color-text-secondary);
+  --ink-3: var(--bc-color-text-muted);
+
+  /* Borders */
+  --border: var(--bc-color-border-subtle);
+  --border-strong: var(--bc-color-border-default);
+
+  /* Brand ramp */
+  --green-50: var(--bc-color-brand-primary-faint);
+  --green-100: var(--bc-color-brand-primary-soft);
+  --green-500: var(--bc-color-brand-primary-light);
+  --green-600: var(--bc-color-brand-primary);
+  --green-700: var(--bc-color-brand-primary-hover);
+  --green-800: var(--bc-color-brand-primary-pressed);
+  --sage-500: var(--bc-color-brand-secondary);
+  --brass-600: var(--bc-color-brand-accent-strong);
+
+  /* Semantic */
+  --success-600: var(--bc-color-success);
+  --warning-600: var(--bc-color-warning);
+  --danger-600: var(--bc-color-danger);
+  --info-600: var(--bc-color-info);
+
+  /* Shape / elevation / rhythm */
+  --radius-sm: var(--bc-radius-sm);
+  --radius-md: var(--bc-radius-md);
+  --radius-lg: var(--bc-radius-lg);
+  --radius-xl: var(--bc-radius-xl);
+  --radius-full: var(--bc-radius-pill);
+  --shadow-sm: var(--bc-shadow-subtle);
+
+  --text-xs: var(--bc-font-size-caption);
+  --text-sm: var(--bc-font-size-secondary);
+  --text-base: var(--bc-font-size-body);
+  --text-md: var(--bc-font-size-body);
+  --text-xl: var(--bc-font-size-section-heading);
+
+  --space-1: var(--bc-space-4);
+  --space-2: var(--bc-space-8);
+  --space-3: var(--bc-space-12);
+  --space-4: var(--bc-space-16);
+  --space-5: var(--bc-space-20);
+  --space-6: var(--bc-space-24);
+  --space-7: var(--bc-space-32);
+
+  --transition-fast: var(--bc-motion-duration-fast);
+  --transition-base: var(--bc-motion-duration-normal);
+  --ease-out: var(--bc-motion-easing-standard);
+
+  --focus-ring: var(--bc-focus-ring);
+}
+
+/* ============================================================================
+   GLOBAL RESET & BASE BEHAVIOR
+   ============================================================================ */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Warm ambient wash — two whisper-level radial tints (brass top-right,
+   forest top-left) over the page cream. Barely perceptible; gives the
+   surface depth without a visible "gradient". */
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(176, 141, 79, 0.06), transparent 60%),
+    radial-gradient(1000px 560px at -12% -6%, rgba(30, 59, 43, 0.05), transparent 58%),
+    var(--bc-color-surface-page);
+  color: var(--bc-color-text-primary);
+  font-family: var(--bc-font-family);
+  font-size: var(--bc-font-size-body);
+  font-weight: var(--bc-font-weight-body);
+  line-height: var(--bc-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  line-height: var(--bc-line-height-tight);
+  text-wrap: balance; /* progressive enhancement */
+}
+
+p {
+  text-wrap: pretty;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::placeholder {
+  color: var(--bc-color-text-faint);
+}
+
+::selection {
+  background: var(--bc-color-brand-primary-soft);
+  color: var(--bc-color-brand-primary);
+}
+
+/* Accessible focus treatment — visible on every interactive element.
+   The outline (not a shadow) is the keyboard indicator: it survives
+   on any background and is never clipped by overflow. */
+:focus-visible {
+  outline: var(--bc-border-width-thick) solid var(--bc-color-brand-primary);
+  outline-offset: 2px;
+  border-radius: var(--bc-radius-sm);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Refined scrollbars — slim, neutral, content-box trick keeps a hairline
+   gutter so scrolling surfaces don't look chunky. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bc-color-neutral-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--bc-color-neutral-border-strong);
+  border: 3px solid transparent;
+  border-radius: var(--bc-radius-pill);
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   SHARED PRIMITIVES (bc-*)
+   Small, token-only building blocks for the redesigned modules. opt-in
+   per component; nothing here targets existing markup.
+   ============================================================================ */
+
+/* ---- Utilities ---- */
+
+.bc-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.bc-eyebrow {
+  font-size: var(--bc-font-size-eyebrow);
+  font-weight: var(--bc-font-weight-eyebrow);
+  letter-spacing: var(--bc-letter-spacing-eyebrow);
+  text-transform: uppercase;
+  color: var(--bc-color-brand-accent-strong);
+}
+
+.bc-divider {
+  height: var(--bc-border-width-thin);
+  border: 0;
+  background: var(--bc-color-border-subtle);
+}
+
+/* ---- Buttons ---- */
+
+.bc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bc-space-icon-gap);
+  min-height: 40px;
+  padding: 0 var(--bc-space-control-x);
+  border: var(--bc-border-width-default) solid transparent;
+  border-radius: var(--bc-radius-md);
+  font-size: var(--bc-font-size-body);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    box-shadow var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.bc-btn:focus-visible {
+  outline: var(--bc-border-width-thick) solid var(--bc-color-brand-primary);
+  outline-offset: 2px;
+}
+
+.bc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Terracotta — the important action (place order, confirm payment). */
+.bc-btn--action {
+  background: var(--bc-color-brand-action);
+  color: var(--bc-color-text-inverse);
+  box-shadow: var(--bc-shadow-subtle);
+}
+.bc-btn--action:hover:not(:disabled) { background: var(--bc-color-brand-action-hover); }
+.bc-btn--action:active:not(:disabled) { background: var(--bc-color-brand-action-pressed); }
+
+/* Forest green — brand-authority secondary actions. */
+.bc-btn--brand {
+  background: var(--bc-color-brand-primary);
+  color: var(--bc-color-text-inverse);
+  box-shadow: var(--bc-shadow-subtle);
+}
+.bc-btn--brand:hover:not(:disabled) { background: var(--bc-color-brand-primary-hover); }
+.bc-btn--brand:active:not(:disabled) { background: var(--bc-color-brand-primary-pressed); }
+
+/* Quiet outline — tertiary actions. */
+.bc-btn--ghost {
+  background: var(--bc-color-surface-raised);
+  border-color: var(--bc-color-border-default);
+  color: var(--bc-color-text-secondary);
+}
+.bc-btn--ghost:hover:not(:disabled) {
+  background: var(--bc-color-surface-page-alt);
+  border-color: var(--bc-color-border-strong);
+  color: var(--bc-color-text-primary);
+}
+
+/* Destructive — reserved for delete flows with confirmation upstream. */
+.bc-btn--danger {
+  background: var(--bc-color-danger);
+  color: var(--bc-color-text-inverse);
+}
+.bc-btn--danger:hover:not(:disabled) { background: var(--bc-color-danger-strong); }
+
+.bc-btn--sm {
+  min-height: 34px;
+  padding: 0 var(--bc-space-12);
+  font-size: var(--bc-font-size-secondary);
+}
+
+/* ---- Inputs ---- */
+
+.bc-input,
+.bc-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 var(--bc-space-12);
+  border: var(--bc-border-width-default) solid var(--bc-color-border-default);
+  border-radius: var(--bc-radius-md);
+  background: var(--bc-color-surface-raised);
+  color: var(--bc-color-text-primary);
+  transition:
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    box-shadow var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.bc-input:focus,
+.bc-select:focus {
+  outline: none;
+  border-color: var(--bc-color-brand-primary);
+  box-shadow: var(--bc-focus-ring);
+}
+
+/* ---- Badges ---- */
+
+.bc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--bc-radius-pill);
+  font-size: var(--bc-font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bc-badge--dot::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--bc-radius-round);
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.bc-badge--success { background: var(--bc-color-success-bg); color: var(--bc-color-success-strong); }
+.bc-badge--warning { background: var(--bc-color-warning-bg); color: var(--bc-color-warning-strong); }
+.bc-badge--danger  { background: var(--bc-color-danger-bg);  color: var(--bc-color-danger-strong); }
+.bc-badge--info    { background: var(--bc-color-info-bg);    color: var(--bc-color-info-strong); }
+.bc-badge--brass   { background: var(--bc-color-brand-accent-soft); color: var(--bc-color-brand-accent-strong); }
+.bc-badge--action  { background: var(--bc-color-brand-action-soft); color: var(--bc-color-brand-action-hover); }
+.bc-badge--neutral { background: var(--bc-color-neutral-bg); color: var(--bc-color-neutral-text); }
+
+/* ---- Cards ---- */
+
+.bc-card {
+  background: var(--bc-color-surface-raised);
+  border: var(--bc-border-width-default) solid var(--bc-color-border-subtle);
+  border-radius: var(--bc-radius-lg);
+  box-shadow: var(--bc-shadow-card);
+}
+
+.bc-card--interactive {
+  transition:
+    box-shadow var(--bc-motion-duration-normal) var(--bc-motion-easing-standard),
+    transform var(--bc-motion-duration-normal) var(--bc-motion-easing-standard);
+}
+
+.bc-card--interactive:hover {
+  box-shadow: var(--bc-shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+.bc-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bc-space-card-gap);
+  padding: var(--bc-space-card-padding) var(--bc-space-card-padding) 0;
+}
+
+.bc-card__title {
+  font-size: var(--bc-font-size-section-heading);
+  font-weight: var(--bc-font-weight-section-heading);
+  letter-spacing: var(--bc-letter-spacing-tight);
+  color: var(--bc-color-text-primary);
+}
+
+.bc-card__body {
+  padding: var(--bc-space-card-padding);
+}
+
+/* ---- Table base ---- */
+
+.bc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--bc-font-size-body);
+}
+
+.bc-table th {
+  padding: 10px var(--bc-space-16);
+  border-bottom: var(--bc-border-width-default) solid var(--bc-color-border-subtle);
+  background: var(--bc-color-surface-page-alt);
+  text-align: left;
+  font-size: var(--bc-font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--bc-letter-spacing-eyebrow);
+  text-transform: uppercase;
+  color: var(--bc-color-text-muted);
+}
+
+.bc-table td {
+  padding: 14px var(--bc-space-16);
+  border-bottom: var(--bc-border-width-default) solid var(--bc-color-border-subtle);
+  vertical-align: middle;
+}
+
+.bc-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.bc-table tbody tr {
+  transition: background-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.bc-table tbody tr:hover {
+  background: var(--bc-color-brand-primary-faint);
+}
+
+/* ---- Skip link (render once at app root) ---- */
+
+.bc-skip-link {
+  position: absolute;
+  top: var(--bc-space-16);
+  left: -9999px;
+  z-index: var(--bc-z-tooltip);
+  padding: var(--bc-space-8) var(--bc-space-16);
+  border-radius: var(--bc-radius-md);
+  background: var(--bc-color-brand-primary);
+  color: var(--bc-color-text-inverse);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.bc-skip-link:focus {
+  left: var(--bc-space-16);
+}
+
+/* ============================================================================
+   DASHBOARD COMPATIBILITY CLASSES
+   Existing components depend on these selectors — kept and refined in
+   place, not renamed or removed. !important is retained only where these
+   must override inline styles set from JSX.
+   ============================================================================ */
+
+.dashboard-shell {
+  width: 100%;
+  overflow-x: clip;
+}
+
+.dashboard-content {
+  width: min(100%, var(--bc-layout-content-max-width));
+  padding: var(--bc-layout-page-padding) !important;
+}
+
+.dashboard-header-content {
+  width: min(100%, var(--bc-layout-content-max-width));
+}
+
+.dashboard-tab-nav {
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding-inline: max(1rem, calc((100% - var(--bc-layout-content-max-width)) / 2 + 2rem)) !important;
+  scrollbar-width: none;
+  box-shadow: var(--bc-shadow-tab-nav);
+}
+
+.dashboard-tab-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.dashboard-tab {
+  flex: 0 0 auto;
+  transition:
+    color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    background var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.dashboard-tab:hover {
+  color: var(--bc-color-brand-primary) !important;
+  background: var(--bc-color-brand-primary-hover-bg) !important;
+}
+
+.dashboard-header button {
+  min-height: 44px;
+}
+
+.login-screen {
+  width: 100%;
+}
+
+.stock-card {
+  transition:
+    box-shadow var(--bc-motion-duration-normal) var(--bc-motion-easing-standard),
+    transform var(--bc-motion-duration-normal) var(--bc-motion-easing-standard);
+}
+
+.stock-card:hover {
+  box-shadow: var(--bc-shadow-card-hover) !important;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .dashboard-content {
+    padding: 1.25rem 1rem 2rem !important;
+  }
+
+  .stock-kpis {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stock-filter {
+    width: 100%;
+    align-items: flex-start !important;
+  }
+
+  .stock-segments {
+    flex: 1 1 100%;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .stock-segment-button {
+    min-width: 0;
+  }
+
+  .stock-row {
+    align-items: flex-start !important;
+  }
+
+  .stock-status {
+    margin-left: 0 !important;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 760px) {
+  /* Touch targets */
+  .bc-btn { min-height: 44px; }
+  .bc-input, .bc-select { min-height: 44px; }
+
+  .dashboard-header {
+    padding: 1rem !important;
+  }
+
+  .dashboard-header-content {
+    align-items: flex-start !important;
+    flex-wrap: wrap;
+    gap: 1rem !important;
+  }
+
+  .dashboard-brand {
+    width: 100%;
+    min-width: 0;
+    gap: 0.75rem !important;
+  }
+
+  .dashboard-brand-copy {
+    min-width: 0;
+  }
+
+  .dashboard-brand h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: clamp(1.25rem, 6vw, 1.6rem) !important;
+  }
+
+  .dashboard-brand-icon {
+    width: 46px !important;
+    height: 46px !important;
+    flex: 0 0 46px;
+    font-size: 1.8rem !important;
+  }
+
+  .dashboard-back-button {
+    padding-inline: 0.8rem !important;
+    margin-right: 0 !important;
+    flex: 0 0 auto;
+  }
+
+  .dashboard-header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.75rem !important;
+  }
+
+  .dashboard-signout-button {
+    padding-inline: 1rem !important;
+  }
+
+  .dashboard-tab-nav {
+    gap: 0 !important;
+    padding-inline: 0.5rem !important;
+  }
+
+  .dashboard-tab {
+    min-height: 52px;
+    padding: 0.8rem 0.95rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .dashboard-content {
+    padding: 1.25rem 1rem 2rem !important;
+  }
+
+  .stock-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .login-screen {
+    align-items: flex-start !important;
+    padding: 1rem !important;
+    overflow-y: auto !important;
+  }
+
+  .login-panel {
+    margin-block: auto;
+    padding: 2rem 1.25rem !important;
+    border-radius: 20px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-header-actions > div:first-child {
+    padding-inline: 0.75rem !important;
+  }
+
+  .dashboard-brand {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-brand-copy {
+    max-width: calc(100% - 58px);
+  }
+
+  .dashboard-back-button {
+    order: 2;
+  }
+}

@@ -1,0 +1,220 @@
+/* ============================================================================
+   HEADER
+   Dark forest bar, token-only values. Focus indicators are restyled to
+   white here: the global brand-green outline is invisible on this surface.
+   ============================================================================ */
+
+.hd {
+  position: relative;
+  overflow: hidden;
+  background: var(--bc-color-brand-primary);
+  box-shadow: var(--bc-shadow-header);
+}
+
+.hd::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--bc-color-white-alpha-10);
+}
+
+/* Photo accent: masked in from the right; absent file = invisible layer.
+   background-image is set inline from Header.tsx via PUBLIC_URL, not
+   here -- a url() in this file would make css-loader require() the
+   asset at build time and fail whenever the optional file isn't
+   present, instead of just quietly not loading it at runtime. */
+.hd-photo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background-size: cover;
+  background-position: center right;
+  -webkit-mask-image: linear-gradient(90deg, transparent 32%, #000 80%);
+  mask-image: linear-gradient(90deg, transparent 32%, #000 80%);
+}
+
+/* Botanical underlay: brass line-art, fades toward content */
+.hd-motif {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: min(430px, 40%);
+  padding-right: var(--bc-space-24);
+  pointer-events: none;
+  color: var(--bc-color-brand-accent);
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 55%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 55%);
+}
+
+.hd-motif svg {
+  flex: none;
+}
+
+.hd-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+  width: min(100%, var(--bc-layout-content-max-width));
+  margin-inline: auto;
+  padding: var(--bc-space-16) var(--bc-space-24);
+}
+
+.hd-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--bc-space-12);
+  min-width: 0;
+}
+
+.hd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  margin-right: var(--bc-space-8);
+  padding: 0 var(--bc-space-12);
+  border: 1px solid var(--bc-color-white-alpha-25);
+  border-radius: var(--bc-radius-md);
+  background: var(--bc-color-white-alpha-10);
+  color: var(--bc-color-text-inverse);
+  font-size: var(--bc-font-size-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.hd-back:hover {
+  background: var(--bc-color-white-alpha-20);
+  border-color: var(--bc-color-white-alpha-40);
+}
+
+.hd-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--bc-color-white-alpha-10);
+  border-radius: var(--bc-radius-lg);
+  background: var(--bc-color-white-alpha-10);
+  color: var(--bc-color-brand-accent);
+}
+
+.hd-copy {
+  min-width: 0;
+}
+
+.hd-title {
+  margin: 0;
+  font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: var(--bc-letter-spacing-tight);
+  line-height: var(--bc-line-height-tight);
+  color: var(--bc-color-text-inverse);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hd-context {
+  display: block;
+  margin-top: 1px;
+  font-size: var(--bc-font-size-caption);
+  font-weight: 600;
+  letter-spacing: var(--bc-letter-spacing-eyebrow);
+  text-transform: uppercase;
+  color: var(--bc-color-white-alpha-80);
+}
+
+.hd-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bc-space-16);
+}
+
+.hd-live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bc-space-8);
+  padding: 6px var(--bc-space-12);
+  border: 1px solid var(--bc-color-white-alpha-10);
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-color-white-alpha-10);
+  font-size: var(--bc-font-size-secondary);
+  font-weight: 500;
+  color: var(--bc-color-white-alpha-80);
+  white-space: nowrap;
+}
+
+.hd-live-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--bc-radius-round);
+  background: var(--bc-color-success-light);
+  animation: hd-pulse 2.4s var(--bc-motion-easing-standard) infinite;
+}
+
+@keyframes hd-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.hd-signout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 var(--bc-space-16);
+  border: 1px solid var(--bc-color-white-alpha-25);
+  border-radius: var(--bc-radius-md);
+  background: transparent;
+  color: var(--bc-color-text-inverse);
+  font-size: var(--bc-font-size-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.hd-signout:hover {
+  background: var(--bc-color-white-alpha-10);
+  border-color: var(--bc-color-white-alpha-40);
+}
+
+/* Dark-surface focus: the global green outline is invisible here */
+.hd :focus-visible {
+  outline: 2px solid var(--bc-color-white-alpha-80);
+  outline-offset: 2px;
+  border-radius: var(--bc-radius-sm);
+}
+
+/* Tablet — motif recedes before it disappears */
+@media (max-width: 1080px) {
+  .hd-motif { width: min(300px, 34%); opacity: 0.11; }
+  .hd-photo { opacity: 0.09; }
+}
+
+/* Mobile — theme.css owns .dashboard-header layout at ≤760px; this block
+   only dismisses decoration and tightens what it doesn't reach */
+@media (max-width: 760px) {
+  .hd-photo, .hd-motif { display: none; }
+  .hd-content { padding-block: var(--bc-space-12); }
+  .hd-live { display: none; }
+  .hd-back span { display: inline; }
+}

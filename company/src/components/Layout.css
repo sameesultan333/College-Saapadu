@@ -1,0 +1,64 @@
+.app-shell {
+  min-height: 100vh;
+  background: #f7f7fb;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0f172a;
+  color: #fff;
+  padding: 14px 28px;
+}
+
+.app-brand {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.app-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.app-nav button {
+  background: transparent;
+  color: #cbd5e1;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-nav button.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-email {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.app-header-right button {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.app-main {
+  padding: 28px;
+}

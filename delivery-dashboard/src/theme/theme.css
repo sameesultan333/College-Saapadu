@@ -1,0 +1,587 @@
+/* ============================================================================
+   BAMBOO CANTEEN — DELIVERY APP THEME
+   Structure:
+     --bc-*          primary token system (shared with the admin app — one
+                     product, two rooms; brand = forest green, delivery
+                     accent = amber)
+     --dlv-*         delivery-specific primitives (status lifecycle pills)
+     --bc-dlv-*      delivery dark identity (login + portal chrome)
+     legacy names    --cream, --soft-orange, --scanner-*, --login-* … kept
+                     as values-or-aliases so every existing stylesheet and
+                     theme.js importer renders unchanged.
+
+   VALUE REFINEMENTS (names stable, values modernized): the neon orange
+   family (#FFB347/#FF8C42/#FF9800) is pulled toward premium amber/terracotta,
+   the lime greens toward herb tones, and shadows are layered + warm-tinted.
+   Any single value can be reverted independently — nothing is renamed.
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* If fonts are preloaded in public/index.html with preconnect, delete the
+   line above and keep the preload there (faster than CSS-discovered fonts). */
+
+:root {
+  color-scheme: light;
+  accent-color: var(--bc-color-brand-primary);
+
+  /* ======================= 1. CORE CANTEEN PALETTE ==================== */
+  /* Legacy names, refined values. Orange = accent/action, green = fresh. */
+
+  --cream: #f8f1e4;            /* page surface — deepened so white cards separate on warmth */
+  --warm-white: #fffdf8;       /* card surface */
+  --soft-orange: #f2a640;      /* was #FFB347 */
+  --deep-orange: #d96f2b;      /* was #FF8C42 — terracotta direction */
+  --fresh-green: #5f9e44;      /* was #7CB342 — herb, not lime */
+  --light-green: #8fbf6a;      /* was #9CCC65 */
+  --cooking-orange: #e8891c;   /* was #FF9800 */
+  --warm-gray: #8a7263;
+  --dark-brown: #43332a;       /* was #5D4037 — espresso text */
+
+  --card-shadow: 0 1px 2px rgba(58, 44, 32, 0.05), 0 4px 16px rgba(58, 44, 32, 0.07);
+  --hover-shadow: 0 2px 4px rgba(58, 44, 32, 0.05), 0 10px 28px rgba(58, 44, 32, 0.12);
+
+  /* Secondary/accent tones reused across dashboard components */
+  --green-700: #4e7f34;
+  --pale-orange-bg: #fbeedd;
+  --pale-orange-bg-2: #fcf1e2;
+  --pale-orange-bg-3: #fdf3e8;
+  --pale-green-bg: #e9f2e2;
+  --pale-green-bg-2: #f1f8ec;
+  --neutral-bg: #f4f1ea;
+  --neutral-border: #e3dccf;
+  --neutral-border-2: #efeae0;
+  --items-list-border: #e6decf;
+  --error-red: #b23b2e;
+  --error-bg: #fbeae4;
+  --toast-close-gray: #a79c8c;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ===================== 2. QR SCANNER PALETTE ======================== */
+  /* Preserved verbatim — scanner components depend on these exact values. */
+
+  --scanner-heading: #1a202c;
+  --scanner-muted: #718096;
+  --scanner-separator: #cbd5e0;
+  --scanner-status-bg: #f7fafc;
+  --scanner-status-text: #2d3748;
+  --scanner-close-text: #4a5568;
+  --scanner-close-border: #e2e8f0;
+  --success-green: #10b981;
+  --success-bg-light: #d1fae5;
+  --success-bg-light-2: #a7f3d0;
+  --success-text-dark: #065f46;
+  --error-red-bright: #ef4444;
+  --error-bg-light: #fee2e2;
+  --error-bg-light-2: #fecaca;
+  --error-text-dark: #991b1b;
+
+  /* ================== 3. SHARED BRAND & SEMANTIC SYSTEM =============== */
+  /* Same values as the admin app — components port between portals.     */
+
+  --bc-color-brand-primary: #1e3b2b;
+  --bc-color-brand-primary-light: #2f5940;
+  --bc-color-brand-primary-hover: #17301f;
+  --bc-color-brand-primary-pressed: #0f2317;
+  --bc-color-brand-primary-soft: #e3ebe1;
+  --bc-color-brand-primary-faint: #f2f6f0;
+  --bc-color-brand-primary-hover-bg: rgba(30, 59, 43, 0.05);
+  --bc-color-brand-primary-icon-bg: rgba(30, 59, 43, 0.1);
+
+  --bc-color-brand-secondary: #7c9473;
+  --bc-color-brand-secondary-hover: #6c8264;
+  --bc-color-brand-secondary-strong: #5e7256;
+  --bc-color-brand-secondary-soft: #edf1e8;
+  --bc-color-brand-secondary-faint: #f6f8f3;
+
+  --bc-color-brand-accent: #b08d4f;
+  --bc-color-brand-accent-hover: #9c7940;
+  --bc-color-brand-accent-strong: #7c6132;
+  --bc-color-brand-accent-soft: #f5eedc;
+  --bc-color-brand-accent-faint: #faf6ec;
+
+  --bc-color-brand-action: #d96f2b;        /* aliased to this app's deep-orange */
+  --bc-color-brand-action-hover: #bf5d20;
+  --bc-color-brand-action-pressed: #a34f19;
+  --bc-color-brand-action-soft: #fbeedd;
+  --bc-color-brand-action-faint: #fdf3e8;
+
+  --bc-color-surface-page: #f8f1e4;
+  --bc-color-surface-page-alt: #fdf8ef;
+  --bc-color-surface-base: #fffdf8;
+  --bc-color-surface-raised: #ffffff;
+  --bc-color-surface-sunken: #f1eadc;
+  --bc-color-surface-overlay: rgba(43, 35, 28, 0.5);
+  --bc-color-surface-veg: #e9f2e2;
+  --bc-color-surface-nonveg: #fbebe7;
+
+  --bc-color-text-primary: #2b231c;
+  --bc-color-text-secondary: #5b4f41;
+  --bc-color-text-muted: #6e6455;
+  --bc-color-text-faint: #a79c8c;
+  --bc-color-text-inverse: #fffdf9;
+  --bc-color-text-brand: #1e3b2b;
+
+  --bc-color-border-subtle: #eae1cd;
+  --bc-color-border-default: #ddd0b5;
+  --bc-color-border-strong: #a8916a;
+
+  --bc-focus-ring-color: rgba(30, 59, 43, 0.14);
+  --bc-focus-ring: 0 0 0 3px var(--bc-focus-ring-color);
+
+  --bc-color-success: #3a6f44;
+  --bc-color-success-light: #5b9563;
+  --bc-color-success-strong: #254c2d;
+  --bc-color-success-bg: #e7f2e5;
+  --bc-color-success-border: #c7e0c1;
+  --bc-color-success-icon-bg: rgba(58, 111, 68, 0.12);
+
+  --bc-color-warning: #8c6a17;
+  --bc-color-warning-light: #c99a3e;
+  --bc-color-warning-strong: #5c4610;
+  --bc-color-warning-bg: #fbf0da;
+  --bc-color-warning-border: #eedba6;
+
+  --bc-color-danger: #b23b2e;
+  --bc-color-danger-light: #c97267;
+  --bc-color-danger-strong: #6e2419;
+  --bc-color-danger-bg: #fbeae4;
+  --bc-color-danger-border: #efc6ba;
+
+  --bc-color-info: #3e6e8e;
+  --bc-color-info-light: #5d93ad;
+  --bc-color-info-strong: #25475c;
+  --bc-color-info-bg: #e7f1f6;
+  --bc-color-info-border: #c4dce6;
+  --bc-color-info-icon-bg: rgba(62, 110, 142, 0.1);
+
+  --bc-color-neutral-bg: #f4f1ea;
+  --bc-color-neutral-bg-strong: #e4dfd3;
+  --bc-color-neutral-text: #7a7266;
+  --bc-color-neutral-border: #d8d0bf;
+  --bc-color-neutral-border-strong: #c7bfaf;
+
+  --bc-color-white: #ffffff;
+  --bc-color-white-alpha-05: rgba(255, 255, 255, 0.05);
+  --bc-color-white-alpha-10: rgba(255, 255, 255, 0.1);
+  --bc-color-white-alpha-20: rgba(255, 255, 255, 0.2);
+  --bc-color-white-alpha-25: rgba(255, 255, 255, 0.25);
+  --bc-color-white-alpha-30: rgba(255, 255, 255, 0.3);
+  --bc-color-white-alpha-40: rgba(255, 255, 255, 0.4);
+  --bc-color-white-alpha-80: rgba(255, 255, 255, 0.8);
+
+  /* =================== 4. DELIVERY IDENTITY (--bc-dlv-*) ============== */
+  /* Slate-night surface; amber = motion/headlight; herb-teal = handoff.
+     Consumed by DeliveryLogin and the portal chrome.                    */
+
+  --bc-dlv-color-bg: #0e1417;
+  --bc-dlv-color-panel: rgba(20, 27, 31, 0.78);
+  --bc-dlv-color-border: rgba(244, 241, 234, 0.1);
+  --bc-dlv-color-field: rgba(244, 241, 234, 0.05);
+  --bc-dlv-color-text: #f4f1ea;
+  --bc-dlv-color-text-muted: rgba(244, 241, 234, 0.62);
+  --bc-dlv-color-accent: #d98e3b;
+  --bc-dlv-color-accent-strong: #b8732a;
+  --bc-dlv-color-accent-2: #4c8f7a;
+
+  /* Dark-surface error semantics shared by both login screens */
+  --bc-login-color-error: #e2645a;
+  --bc-login-color-error-light: #f2a9a2;
+  --bc-login-color-error-bg: rgba(226, 100, 90, 0.12);
+  --bc-login-color-error-border: rgba(226, 100, 90, 0.32);
+  --bc-login-shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* ======================== 5. TYPOGRAPHY ============================= */
+
+  --bc-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bc-login-font-family: var(--bc-font-family);
+  --bc-login-font-family-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  --bc-font-size-display: clamp(2rem, 1.6rem + 1.6vw, 2.5rem);
+  --bc-font-size-page-heading: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  --bc-font-size-section-heading: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  --bc-font-size-card-title: 0.9375rem;
+  --bc-font-size-body: 0.9375rem;
+  --bc-font-size-secondary: 0.8125rem;
+  --bc-font-size-caption: 0.75rem;
+  --bc-font-size-metric: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+  --bc-font-size-eyebrow: 0.6875rem;
+
+  --bc-font-weight-display: 700;
+  --bc-font-weight-page-heading: 700;
+  --bc-font-weight-section-heading: 600;
+  --bc-font-weight-card-title: 600;
+  --bc-font-weight-body: 400;
+  --bc-font-weight-secondary: 400;
+  --bc-font-weight-metric: 700;
+  --bc-font-weight-eyebrow: 600;
+
+  --bc-letter-spacing-tighter: -0.02em;
+  --bc-letter-spacing-tight: -0.01em;
+  --bc-letter-spacing-normal: 0;
+  --bc-letter-spacing-eyebrow: 0.08em;
+
+  --bc-line-height-tight: 1.2;
+  --bc-line-height-normal: 1.5;
+  --bc-line-height-relaxed: 1.65;
+
+  /* ========================== 6. SPACING ============================== */
+
+  --bc-space-2: 2px;
+  --bc-space-4: 4px;
+  --bc-space-8: 8px;
+  --bc-space-12: 12px;
+  --bc-space-16: 16px;
+  --bc-space-20: 20px;
+  --bc-space-24: 24px;
+  --bc-space-32: 32px;
+  --bc-space-40: 40px;
+  --bc-space-56: 56px;
+  --bc-space-72: 72px;
+
+  --bc-space-icon-gap: var(--bc-space-8);
+  --bc-space-card-padding: var(--bc-space-20);
+  --bc-space-card-gap: var(--bc-space-16);
+  --bc-space-section-gap: var(--bc-space-32);
+  --bc-space-page-padding: clamp(1.25rem, 3vw, 2.75rem);
+
+  /* =========================== 7. RADIUS ============================== */
+
+  --bc-radius-sm: 6px;
+  --bc-radius-md: 8px;
+  --bc-radius-lg: 12px;
+  --bc-radius-xl: 16px;
+  --bc-radius-pill: 999px;
+  --bc-radius-round: 50%;
+
+  --bc-login-radius-md: 12px;
+  --bc-login-radius-lg: 16px;
+  --bc-login-radius-xl: 24px;
+
+  /* =========================== 8. SHADOW ============================== */
+
+  --bc-shadow-none: none;
+  --bc-shadow-subtle: 0 1px 2px rgba(58, 44, 32, 0.06);
+  --bc-shadow-card: 0 1px 2px rgba(58, 44, 32, 0.05), 0 4px 14px rgba(58, 44, 32, 0.05);
+  --bc-shadow-card-hover: 0 2px 4px rgba(58, 44, 32, 0.05), 0 10px 24px rgba(58, 44, 32, 0.1);
+  --bc-shadow-elevated: 0 12px 32px rgba(43, 35, 28, 0.14);
+  --bc-shadow-overlay: 0 24px 64px rgba(20, 16, 12, 0.3);
+
+  /* ========================== 9. MOTION =============================== */
+
+  --bc-motion-duration-fast: 120ms;
+  --bc-motion-duration-normal: 200ms;
+  --bc-motion-duration-slow: 320ms;
+  --bc-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --bc-motion-easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --bc-motion-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ========================== 10. Z-INDEX ============================= */
+
+  --bc-z-base: 0;
+  --bc-z-dropdown: 100;
+  --bc-z-sticky: 200;
+  --bc-z-header: 300;
+  --bc-z-overlay: 400;
+  --bc-z-modal: 500;
+  --bc-z-toast: 600;
+  --bc-z-tooltip: 700;
+
+  /* ====================================================================
+     LEGACY ALIASES
+     Old names, pointed at the system above so existing stylesheets and
+     theme.js importers render coherently with the redesign.
+     ==================================================================== */
+
+  --font-family-base: var(--bc-font-family);
+  --font-family-login: var(--bc-font-family);
+
+  --login-bg: var(--bc-dlv-color-bg);
+  --login-border: var(--bc-dlv-color-border);
+  --login-text: var(--bc-dlv-color-text);
+  --login-button-from: var(--bc-dlv-color-accent);
+  --login-button-to: var(--bc-dlv-color-accent-strong);
+  --login-button-text: #14100b;
+  --login-error: var(--bc-login-color-error-light);
+}
+
+/* ============================================================================
+   BASE
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+/* Warm ambient wash — amber top-left, herb top-right, barely perceptible */
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  background:
+    radial-gradient(1100px 560px at 88% -8%, rgba(217, 142, 59, 0.06), transparent 60%),
+    radial-gradient(1000px 540px at -10% -6%, rgba(95, 158, 68, 0.05), transparent 58%),
+    var(--bc-color-surface-page);
+  color: var(--bc-color-text-primary);
+  font-family: var(--bc-font-family);
+  font-size: var(--bc-font-size-body);
+  font-weight: var(--bc-font-weight-body);
+  line-height: var(--bc-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  line-height: var(--bc-line-height-tight);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::placeholder {
+  color: var(--bc-color-text-faint);
+}
+
+::selection {
+  background: var(--bc-color-brand-primary-soft);
+  color: var(--bc-color-brand-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--bc-color-brand-primary);
+  outline-offset: 2px;
+  border-radius: var(--bc-radius-sm);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bc-color-neutral-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--bc-color-neutral-border-strong);
+  border: 3px solid transparent;
+  border-radius: var(--bc-radius-pill);
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   SHARED PRIMITIVES (bc-*)
+   ============================================================================ */
+
+.bc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bc-space-icon-gap);
+  min-height: 40px;
+  padding: 0 var(--bc-space-16);
+  border: 1px solid transparent;
+  border-radius: var(--bc-radius-md);
+  font-size: var(--bc-font-size-body);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.bc-btn:focus-visible {
+  outline: 2px solid var(--bc-color-brand-primary);
+  outline-offset: 2px;
+}
+
+.bc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Deep orange — this portal's action color */
+.bc-btn--action {
+  background: var(--bc-color-brand-action);
+  color: var(--bc-color-text-inverse);
+  box-shadow: var(--bc-shadow-subtle);
+}
+.bc-btn--action:hover:not(:disabled) { background: var(--bc-color-brand-action-hover); }
+.bc-btn--action:active:not(:disabled) { background: var(--bc-color-brand-action-pressed); }
+
+.bc-btn--brand {
+  background: var(--bc-color-brand-primary);
+  color: var(--bc-color-text-inverse);
+}
+.bc-btn--brand:hover:not(:disabled) { background: var(--bc-color-brand-primary-hover); }
+
+.bc-btn--ghost {
+  background: transparent;
+  border-color: var(--bc-color-border-default);
+  color: var(--bc-color-text-secondary);
+}
+.bc-btn--ghost:hover:not(:disabled) {
+  background: var(--bc-color-surface-page-alt);
+  border-color: var(--bc-color-border-strong);
+  color: var(--bc-color-text-primary);
+}
+
+.bc-btn--sm {
+  min-height: 34px;
+  padding: 0 var(--bc-space-12);
+  font-size: var(--bc-font-size-secondary);
+}
+
+.bc-input,
+.bc-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 var(--bc-space-12);
+  border: 1px solid var(--bc-color-border-default);
+  border-radius: var(--bc-radius-md);
+  background: var(--bc-color-surface-raised);
+  color: var(--bc-color-text-primary);
+  transition:
+    border-color var(--bc-motion-duration-fast) var(--bc-motion-easing-standard),
+    box-shadow var(--bc-motion-duration-fast) var(--bc-motion-easing-standard);
+}
+
+.bc-input:focus,
+.bc-select:focus {
+  outline: none;
+  border-color: var(--bc-color-brand-primary);
+  box-shadow: var(--bc-focus-ring);
+}
+
+.bc-card {
+  background: var(--bc-color-surface-raised);
+  border: 1px solid var(--bc-color-border-subtle);
+  border-radius: var(--bc-radius-lg);
+  box-shadow: var(--bc-shadow-card);
+  min-width: 0;
+}
+
+.bc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--bc-radius-pill);
+  font-size: var(--bc-font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bc-badge--success { background: var(--bc-color-success-bg); color: var(--bc-color-success-strong); }
+.bc-badge--warning { background: var(--bc-color-warning-bg); color: var(--bc-color-warning-strong); }
+.bc-badge--danger  { background: var(--bc-color-danger-bg);  color: var(--bc-color-danger-strong); }
+.bc-badge--info    { background: var(--bc-color-info-bg);    color: var(--bc-color-info-strong); }
+.bc-badge--neutral { background: var(--bc-color-neutral-bg); color: var(--bc-color-neutral-text); }
+
+/* ============================================================================
+   DELIVERY LIFECYCLE PILLS (dlv-*)
+   The route states the dashboard will speak: ready → in transit → delivered,
+   with an issue escape hatch. Dot + label + tinted surface — never color alone.
+   ============================================================================ */
+
+.dlv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: var(--bc-radius-pill);
+  font-size: var(--bc-font-size-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.dlv-pill::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--bc-radius-round);
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.dlv-pill--ready {
+  background: var(--bc-color-warning-bg);
+  color: var(--bc-color-warning-strong);
+}
+
+.dlv-pill--transit {
+  background: var(--bc-color-info-bg);
+  color: var(--bc-color-info-strong);
+}
+
+.dlv-pill--delivered {
+  background: var(--bc-color-success-bg);
+  color: var(--bc-color-success-strong);
+}
+
+.dlv-pill--issue {
+  background: var(--bc-color-danger-bg);
+  color: var(--bc-color-danger-strong);
+}
+
+/* Route accent — the dashed handoff line from the login's RouteMark */
+.dlv-route-line {
+  background-image: linear-gradient(90deg, var(--bc-dlv-color-accent) 0 6px, transparent 6px 12px);
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+  background-position: center;
+  height: 2px;
+  border: 0;
+}

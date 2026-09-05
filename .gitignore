@@ -1,0 +1,42 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ai_engine/venv/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# AI / development instructions
+.claude/
+CLAUDE.md
+claude.md
+AGENTS.md
+
+# Design references
+*.zip
+design_reference_extracted/
+
+"@ | Set-Content .gitignore

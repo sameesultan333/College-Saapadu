@@ -1,0 +1,47 @@
+// Top-level build file
+
+buildscript {
+    ext {
+        buildToolsVersion = "33.0.0"
+        minSdkVersion = 21
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "23.1.7779620"
+
+        // Stable AndroidX versions
+        androidxCoreVersion = "1.9.0"
+        androidxAppCompatVersion = "1.6.1"
+
+        kotlinVersion = "1.8.22"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
+}
+
+// ✅ VERY IMPORTANT (fix Kotlin + material + dex issues)
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            // Kotlin fix
+            force "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+
+            // Material fix
+            force "com.google.android.material:material:1.9.0"
+        }
+    }
+}
