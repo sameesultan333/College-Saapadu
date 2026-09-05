@@ -96,8 +96,13 @@ export default function LoginScreen({ navigation }: Props) {
         <View style={S.root}>
           <Animated.View style={[S.card, { opacity: fade, transform: [{ translateY: slide }] }]}>
             <View style={S.brandRow}>
+              {/* Placeholder mark — swap for the real logo whenever it's
+                  ready: drop the file at assets/logo.png and replace this
+                  View with
+                    <Image source={require("../../assets/logo.png")} style={S.brandTile} resizeMode="contain" />
+                  S.brandTile's size/radius already fit a square logo. */}
               <View style={S.brandTile}>
-                <UtensilsCrossed size={22} color={C.bg} strokeWidth={2} />
+                <UtensilsCrossed size={26} color={C.bg} strokeWidth={2} />
               </View>
               <Text style={S.brandName}>College Saapadu</Text>
             </View>
@@ -173,9 +178,13 @@ const S = StyleSheet.create({
   root: { flex: 1, justifyContent: "center", paddingHorizontal: 20 },
 
   card: { gap: 4 },
-  brandRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 28 },
-  brandTile: { width: 34, height: 34, borderRadius: 10, backgroundColor: C.forest, alignItems: "center", justifyContent: "center" },
-  brandName: { fontSize: 15, fontWeight: "700", color: C.ink },
+  brandRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 28 },
+  brandTile: {
+    width: 44, height: 44, borderRadius: 13, backgroundColor: C.forest,
+    alignItems: "center", justifyContent: "center",
+    shadowColor: C.forest, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.28, shadowRadius: 8, elevation: 4,
+  },
+  brandName: { fontSize: 21, fontWeight: "800", color: C.ink, letterSpacing: -0.3 },
 
   title: { fontSize: 26, fontWeight: "800", color: C.ink, letterSpacing: -0.4 },
   subtitle: { fontSize: 13.5, color: C.ink3, marginTop: 4, marginBottom: 24 },
