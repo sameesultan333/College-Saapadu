@@ -27,14 +27,14 @@ export type LocalFoodImageKey =
   | "meals" | "parotta" | "coffee" | "juice" | "sweet";
 
 export const localFoodImages: Partial<Record<LocalFoodImageKey, ReturnType<typeof require>>> = {
-  // idly: require("./idly/idly.jpg"),
-  // dosa: require("./dosa/dosa.jpg"),
-  // vada: require("./vada/vada.jpg"),
-  // samosa: require("./samosa/samosa.jpg"),
-  // biryani: require("./biryani/biryani.jpg"),
-  // meals: require("./meals/meals.jpg"),
-  // parotta: require("./parotta/parotta.jpg"),
-  // coffee: require("./coffee/coffee.jpg"),
-  // juice: require("./juice/juice.jpg"),
-  // sweet: require("./sweet/sweet.jpg"),
+  idly: require("./idly/idly.jpg"),
+  dosa: require("./dosa/dosa.jpg"),
+  vada: require("./vada/vada.jpg"),
+  samosa: require("./samosa/samosa.jpg"),
+  biryani: require("./biriyani/biriyani.jpg"),
+  meals: require("./meals/meals.jpg"),
+  parotta: require("./parotta/parotta.jpg"),
+  coffee: require("./coffee/coffee.jpg"),
+  juice: require("./juice/juice.jpg"),
+  sweet: require("./sweet/sweet.jpg"),
 };

@@ -16,6 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -27,7 +28,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Check, Eye, EyeOff, Lock, Phone, UtensilsCrossed } from "lucide-react-native";
+import { Check, Eye, EyeOff, Lock, Phone } from "lucide-react-native";
 import { loginUser } from "../services/auth";
 import { getFoodColors } from "../theme/foodTheme";
 import type { RootStackParamList } from "../types/navigation";
@@ -96,14 +97,7 @@ export default function LoginScreen({ navigation }: Props) {
         <View style={S.root}>
           <Animated.View style={[S.card, { opacity: fade, transform: [{ translateY: slide }] }]}>
             <View style={S.brandRow}>
-              {/* Placeholder mark — swap for the real logo whenever it's
-                  ready: drop the file at assets/logo.png and replace this
-                  View with
-                    <Image source={require("../../assets/logo.png")} style={S.brandTile} resizeMode="contain" />
-                  S.brandTile's size/radius already fit a square logo. */}
-              <View style={S.brandTile}>
-                <UtensilsCrossed size={26} color={C.bg} strokeWidth={2} />
-              </View>
+              <Image source={require("../assets/logo.png")} style={S.brandTile} resizeMode="contain" />
               <Text style={S.brandName}>College Saapadu</Text>
             </View>
 
