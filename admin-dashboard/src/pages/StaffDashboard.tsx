@@ -41,6 +41,7 @@ interface StaffDashboardProps {
 
 interface Profile {
   name: string;
+  staff_id: string | null;
   phone: string;
   canteen_name: string | null;
 }
@@ -395,6 +396,7 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
   return (
     <AdminLayout
       canteenName={displayCanteen}
+      staffName={displayName}
       onLogout={onLogout}
       tabs={tabs}
       activeTab={activeTab}
@@ -511,6 +513,10 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
               </div>
 
               <div className="sd-badge-rows">
+                <div className="sd-badge-row">
+                  <span className="sd-badge-label">Staff ID</span>
+                  <span className="sd-badge-value">{profile?.staff_id || "—"}</span>
+                </div>
                 <div className="sd-badge-row">
                   <span className="sd-badge-label">Phone</span>
                   <span className="sd-badge-value">{profile?.phone || "—"}</span>

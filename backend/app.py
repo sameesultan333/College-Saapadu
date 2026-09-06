@@ -176,4 +176,5 @@ def _apply_lightweight_migrations():
     with engine.begin() as conn:
         conn.execute(text("ALTER TABLE canteens ADD COLUMN IF NOT EXISTS opens_at TIME"))
         conn.execute(text("ALTER TABLE canteens ADD COLUMN IF NOT EXISTS closes_at TIME"))
+        conn.execute(text("ALTER TABLE staff_accounts ADD COLUMN IF NOT EXISTS staff_id VARCHAR"))
 

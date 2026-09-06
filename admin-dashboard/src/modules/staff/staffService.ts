@@ -5,6 +5,7 @@ export type StaffRole = "staff" | "delivery";
 export interface StaffMember {
   id: number;
   name: string;
+  staff_id: string | null;
   phone: string;
   canteen_id: number;
   is_active: boolean;
@@ -19,6 +20,7 @@ export async function fetchStaff(role: StaffRole, canteenId?: number): Promise<S
 
 export interface CreateStaffInput {
   name: string;
+  staff_id: string;
   phone: string;
   password: string;
   confirm_password: string;
@@ -28,7 +30,7 @@ export interface CreateStaffInput {
 
 export async function createStaff(
   input: CreateStaffInput
-): Promise<{ id: number; name: string; canteen_id: number; role: StaffRole }> {
+): Promise<{ id: number; name: string; staff_id: string | null; canteen_id: number; role: StaffRole }> {
   return apiPost("/staff/create", input);
 }
 

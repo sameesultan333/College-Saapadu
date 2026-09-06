@@ -12,6 +12,7 @@ interface TabItem {
 
 interface AdminLayoutProps {
   canteenName?: string;
+  staffName?: string;
   onLogout: () => void;
   onBack?: (() => void) | null;
   tabs: TabItem[];
@@ -37,6 +38,7 @@ const styles = {
 
 export default function AdminLayout({
   canteenName,
+  staffName,
   onLogout,
   onBack = null,
   tabs,
@@ -47,7 +49,7 @@ export default function AdminLayout({
 }: AdminLayoutProps) {
   return (
     <div className="dashboard-shell" style={styles.shell}>
-      <Header canteenName={canteenName} onLogout={onLogout} onBack={onBack} />
+      <Header canteenName={canteenName} staffName={staffName} onLogout={onLogout} onBack={onBack} />
       <TabNav tabs={tabs} activeTab={activeTab} onSelect={onSelectTab} />
 
       {notifications}

@@ -4,6 +4,8 @@ import { ArrowLeft, LogOut } from "lucide-react";
 
 interface HeaderProps {
   canteenName?: string;
+  /** Signed-in Manager/Staff account name -- shown next to Sign Out. */
+  staffName?: string;
   onLogout: () => void;
   onBack?: (() => void) | null;
   backLabel?: string;
@@ -208,6 +210,40 @@ const LIVE_PILL: CSSProperties = {
   whiteSpace: "nowrap",
 };
 
+const STAFF_PILL: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "var(--bc-space-8)",
+  padding: "6px var(--bc-space-12) 6px 6px",
+  border: "1px solid var(--bc-color-white-alpha-10)",
+  borderRadius: "var(--bc-radius-pill)",
+  background: "var(--bc-color-white-alpha-10)",
+  color: "var(--bc-color-text-inverse)",
+  fontSize: "var(--bc-font-size-secondary)",
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+  maxWidth: 180,
+};
+
+const STAFF_AVATAR: CSSProperties = {
+  display: "grid",
+  placeItems: "center",
+  flex: "none",
+  width: 24,
+  height: 24,
+  borderRadius: "var(--bc-radius-round)",
+  background: "var(--bc-color-brand-accent)",
+  color: "var(--bc-color-brand-primary)",
+  fontSize: "0.6875rem",
+  fontWeight: 700,
+};
+
+const STAFF_NAME: CSSProperties = {
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
 const LIVE_DOT: CSSProperties = {
   flex: "none",
   width: 7,
@@ -251,6 +287,7 @@ const FOCUS_RING: CSSProperties = {
 
 export default function Header({
   canteenName,
+  staffName,
   onLogout,
   onBack,
   backLabel = "← Canteens",
@@ -342,6 +379,15 @@ export default function Header({
         </div>
 
         <div className="dashboard-header-actions" style={ACTIONS}>
+          {staffName && (
+            <span style={STAFF_PILL} title={staffName}>
+              <span style={STAFF_AVATAR} aria-hidden="true">
+                {staffName.trim().charAt(0).toUpperCase()}
+              </span>
+              {!isNarrow && <span style={STAFF_NAME}>{staffName}</span>}
+            </span>
+          )}
+
           {live && !isNarrow && (
             <span style={LIVE_PILL}>
               <span style={LIVE_DOT} ref={dotRef} aria-hidden="true" />

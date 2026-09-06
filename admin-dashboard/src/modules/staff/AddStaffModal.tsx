@@ -151,6 +151,7 @@ export default function AddStaffModal({
   onCreated,
 }: AddStaffModalProps) {
   const [name, setName] = useState("");
+  const [staffId, setStaffId] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -190,6 +191,7 @@ export default function AddStaffModal({
     try {
       await createStaff({
         name: name.trim(),
+        staff_id: staffId.trim(),
         phone: phone.trim(),
         password,
         confirm_password: confirmPassword,
@@ -255,6 +257,23 @@ export default function AddStaffModal({
               autoFocus
               onChange={(e) => setName(e.target.value)}
               onFocus={() => setFocusedField("name")}
+              onBlur={() => setFocusedField(null)}
+            />
+          </div>
+
+          <div style={GROUP}>
+            <label htmlFor="add-staff-id" style={LABEL}>
+              Staff ID
+            </label>
+            <input
+              id="add-staff-id"
+              style={inputStyle("staffId")}
+              type="text"
+              required
+              autoComplete="off"
+              value={staffId}
+              onChange={(e) => setStaffId(e.target.value)}
+              onFocus={() => setFocusedField("staffId")}
               onBlur={() => setFocusedField(null)}
             />
           </div>

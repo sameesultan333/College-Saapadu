@@ -105,6 +105,7 @@ class StaffLogin(BaseModel):
 
 class StaffCreate(BaseModel):
     name: str
+    staff_id: str
     phone: str
     password: str
     confirm_password: str

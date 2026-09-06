@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import { Bell, History, LayoutDashboard, Lightbulb, Package, ShoppingCart } from "lucide-react";
 
 import { WS } from "../config/api";
+import { getSession } from "../auth/session";
 
 import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 
@@ -741,6 +742,7 @@ export default function AdminDashboard({ canteenId, canteenName, onBack, onLogou
   return (
     <AdminLayout
       canteenName={canteenName}
+      staffName={getSession()?.name}
       onLogout={onLogout}
       onBack={onBack}
       tabs={tabs}

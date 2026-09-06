@@ -222,6 +222,7 @@ export default function ManagerDashboard({ onLogout }: ManagerDashboardProps) {
     return (
       <AdminLayout
         canteenName={collegeName}
+        staffName={session?.name}
         onLogout={onLogout}
         tabs={tabs}
         activeTab={activeTab}
@@ -240,6 +241,7 @@ export default function ManagerDashboard({ onLogout }: ManagerDashboardProps) {
   return (
     <AdminLayout
       canteenName={collegeName}
+      staffName={session?.name}
       onLogout={onLogout}
       tabs={tabs}
       activeTab={activeTab}

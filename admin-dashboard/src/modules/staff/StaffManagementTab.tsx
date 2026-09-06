@@ -688,6 +688,10 @@ export default function StaffManagementTab({ canteens }: StaffManagementTabProps
                   </div>
 
                   <div style={CARD_META}>
+                    <span style={CARD_META_LABEL}>Staff ID</span>
+                    <span>{s.staff_id || "—"}</span>
+                  </div>
+                  <div style={CARD_META}>
                     <span style={CARD_META_LABEL}>Phone</span>
                     <span style={PHONE_TEXT}>{s.phone}</span>
                   </div>
@@ -706,6 +710,7 @@ export default function StaffManagementTab({ canteens }: StaffManagementTabProps
                 <thead>
                   <tr>
                     <th style={TH}>Name</th>
+                    <th style={TH}>Staff ID</th>
                     <th style={TH}>Phone</th>
                     <th style={TH}>Canteen</th>
                     <th style={TH}>Status</th>
@@ -727,6 +732,9 @@ export default function StaffManagementTab({ canteens }: StaffManagementTabProps
                           </span>
                           <span style={NAME_TEXT}>{s.name}</span>
                         </div>
+                      </td>
+                      <td style={s === staff[staff.length - 1] ? { ...TD, ...TD_LAST } : TD}>
+                        {s.staff_id || "—"}
                       </td>
                       <td style={s === staff[staff.length - 1] ? { ...TD, ...TD_LAST } : TD}>
                         <span style={PHONE_TEXT}>{s.phone}</span>

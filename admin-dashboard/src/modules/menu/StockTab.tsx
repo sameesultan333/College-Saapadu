@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 import {
   Boxes,
   CircleAlert,
-  CircleCheck,
   IndianRupee,
   LayoutGrid,
   PackageOpen,
@@ -37,13 +36,12 @@ interface StockTabProps {
 /* strip, the filter and the cards always agree.                       */
 /* ------------------------------------------------------------------ */
 
-type StockFilter = "ALL" | "CRITICAL" | "WATCH" | "HEALTHY";
+type StockFilter = "ALL" | "CRITICAL" | "WATCH";
 
 const matchesFilter = (stock: number, filter: StockFilter): boolean => {
   if (filter === "ALL") return true;
   if (filter === "CRITICAL") return stock < 5;
-  if (filter === "WATCH") return stock >= 5 && stock < 10;
-  return stock >= 10;
+  return stock >= 5 && stock < 10;
 };
 
 interface SegmentMeta {
@@ -56,7 +54,6 @@ const SEGMENTS: SegmentMeta[] = [
   { value: "ALL", label: "All", icon: LayoutGrid },
   { value: "CRITICAL", label: "Critical", icon: CircleAlert },
   { value: "WATCH", label: "Watch", icon: TrendingDown },
-  { value: "HEALTHY", label: "Healthy", icon: CircleCheck },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -358,7 +355,6 @@ function FilterBar({ menu, filter, shownCount, onChange }: FilterBarProps) {
       ALL: menu.length,
       CRITICAL: menu.filter((i) => i.stock < 5).length,
       WATCH: menu.filter((i) => i.stock >= 5 && i.stock < 10).length,
-      HEALTHY: menu.filter((i) => i.stock >= 10).length,
     }),
     [menu]
   );

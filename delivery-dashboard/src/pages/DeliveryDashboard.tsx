@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { Bike } from "lucide-react";
+import { Truck } from "lucide-react";
 
 import DeliveryLayout from "../layouts/DeliveryLayout/DeliveryLayout";
 import OrderTabs from "../modules/orders/OrderTabs";
@@ -142,7 +142,7 @@ function BootScreen() {
   return (
     <div style={BOOT.card} role="status" aria-live="polite">
       <span style={BOOT.mark} aria-hidden="true">
-        <Bike size={22} strokeWidth={1.9} />
+        <Truck size={22} strokeWidth={1.9} />
       </span>
       <p style={BOOT.eyebrow}>College Saapaadu · Delivery</p>
       <h2 style={BOOT.title}>Preparing your route</h2>
@@ -161,6 +161,7 @@ export default function DeliveryDashboard({ onLogout }: DeliveryDashboardProps) 
   const delivery = getSession();
   const CANTEEN_ID = delivery?.canteen_id ?? undefined;
   const CANTEEN_NAME = delivery?.canteen_name || "Delivery Counter";
+  const COURIER_NAME = delivery?.name;
 
   /* ================= UI / FLOW STATE ================= */
   const [selectedOrder, setSelectedOrder] = useState<DeliveryOrder | null>(null);
@@ -226,7 +227,7 @@ export default function DeliveryDashboard({ onLogout }: DeliveryDashboardProps) 
   if (!delivery) return null;
 
   return (
-    <DeliveryLayout canteenName={CANTEEN_NAME} onLogout={onLogout}>
+    <DeliveryLayout canteenName={CANTEEN_NAME} courierName={COURIER_NAME} onLogout={onLogout}>
       {!booted ? (
         <BootScreen />
       ) : (

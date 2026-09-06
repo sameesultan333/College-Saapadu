@@ -127,6 +127,7 @@ def get_my_profile(
     return {
         "id": staff.id,
         "name": staff.name,
+        "staff_id": staff.staff_id,
         "phone": staff.phone,
         "role": staff.role.value,
         "college_id": staff.college_id,
@@ -169,6 +170,7 @@ def create_staff(
         college_id=manager.college_id,
         canteen_id=canteen.id,
         name=data.name,
+        staff_id=data.staff_id,
         phone=data.phone,
         password=hash_password(data.password),
         role=StaffRole.DELIVERY if data.role == "delivery" else StaffRole.STAFF,
@@ -182,6 +184,7 @@ def create_staff(
         "message": "Staff created",
         "id": staff.id,
         "name": staff.name,
+        "staff_id": staff.staff_id,
         "canteen_id": staff.canteen_id,
         "role": staff.role.value,
     }
@@ -211,6 +214,7 @@ def list_staff(
         {
             "id": s.id,
             "name": s.name,
+            "staff_id": s.staff_id,
             "phone": s.phone,
             "canteen_id": s.canteen_id,
             "is_active": s.is_active,

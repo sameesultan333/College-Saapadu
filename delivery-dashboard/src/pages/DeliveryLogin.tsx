@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, FormEvent, ReactElement } from "react";
 import {
   ArrowRight,
-  Bike,
   CircleAlert,
   Eye,
   EyeOff,
   Loader2,
   PackageCheck,
   ShieldCheck,
+  Truck,
 } from "lucide-react";
 
 import { API } from "../config/api";
@@ -551,7 +551,7 @@ export default function DeliveryLogin({ onLogin }: DeliveryLoginProps) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "var(--bc-space-12)", minWidth: 0 }}>
             <div style={STRIP_MARK} aria-hidden="true">
-              <Bike size={21} strokeWidth={2} />
+              <Truck size={21} strokeWidth={2} />
             </div>
             <div style={STRIP_COPY}>
               <span style={STRIP_NAME}>COLLEGE SAAPAADU</span>

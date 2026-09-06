@@ -221,6 +221,17 @@ class StaffAccount(Base):
         nullable=False
     )
 
+    # Employee/staff identifier the manager assigns when creating the
+    # account (e.g. a canteen's internal staff code) -- distinct from
+    # User.institutional_id, which identifies mobile customers. Nullable at
+    # the database level (existing rows predate this field, added via the
+    # lightweight migration in app.py) even though the create-staff flow
+    # requires it going forward.
+    staff_id = Column(
+        String,
+        nullable=True
+    )
+
     phone = Column(
         String,
         nullable=False,

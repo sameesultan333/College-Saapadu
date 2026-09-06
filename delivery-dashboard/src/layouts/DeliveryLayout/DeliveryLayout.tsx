@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 interface DeliveryLayoutProps {
   canteenName: string;
+  courierName?: string;
   onLogout: () => void;
   children: ReactNode;
 }
@@ -43,10 +44,10 @@ const mainStyle: CSSProperties = {
  * children; fixed-position overlays (modals, scanner, toasts) ignore
  * this padding entirely since they're out of normal flow.
  */
-export default function DeliveryLayout({ canteenName, onLogout, children }: DeliveryLayoutProps) {
+export default function DeliveryLayout({ canteenName, courierName, onLogout, children }: DeliveryLayoutProps) {
   return (
     <div style={containerStyle}>
-      <Header canteenName={canteenName} onLogout={onLogout} />
+      <Header canteenName={canteenName} courierName={courierName} onLogout={onLogout} />
       <main id="main-content" style={mainStyle}>
         {children}
       </main>

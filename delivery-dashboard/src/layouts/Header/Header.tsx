@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
-import { Bike, LogOut } from "lucide-react";
+import { LogOut, Truck } from "lucide-react";
 
 interface HeaderProps {
   canteenName: string;
+  courierName?: string;
   onLogout: () => void;
 }
 
@@ -27,7 +28,7 @@ function useMediaQuery(query: string): boolean {
 
 /* ------------------------------------------------------------------ */
 /* RouteMark — the delivery signature from the login, as a quiet       */
-/* desktop-only echo. One bicycle on this screen, and it's in the mark. */
+/* desktop-only echo. One truck mark on this screen, and it's in the mark. */
 /* ------------------------------------------------------------------ */
 
 function RouteEcho(): ReactElement {
@@ -112,13 +113,47 @@ const NAME = (compact: boolean): CSSProperties => ({
   whiteSpace: "nowrap",
 });
 
-/* Plain text — the bike lives in the mark, nowhere else */
+/* Plain text — the truck mark lives in the mark, nowhere else */
 const SUBTITLE: CSSProperties = {
   fontSize: "var(--bc-font-size-eyebrow, 0.6875rem)",
   fontWeight: 600,
   letterSpacing: "var(--bc-letter-spacing-eyebrow, 0.08em)",
   textTransform: "uppercase",
   color: "var(--bc-color-text-muted, #6e6455)",
+};
+
+const COURIER_PILL: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "var(--bc-space-8, 8px)",
+  padding: "5px var(--bc-space-12, 12px) 5px 5px",
+  border: "1px solid var(--bc-color-border-default, #ddd0b5)",
+  borderRadius: "var(--bc-radius-pill, 999px)",
+  color: "var(--bc-color-text-secondary, #5b4f41)",
+  fontSize: "var(--bc-font-size-secondary, 0.8125rem)",
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+  maxWidth: 160,
+  flex: "none",
+};
+
+const COURIER_AVATAR: CSSProperties = {
+  display: "grid",
+  placeItems: "center",
+  flex: "none",
+  width: 24,
+  height: 24,
+  borderRadius: "var(--bc-radius-round, 50%)",
+  backgroundColor: "var(--bc-color-brand-action-soft, #fdf3e8)",
+  color: "var(--bc-color-brand-action, #d96f2b)",
+  fontSize: "0.6875rem",
+  fontWeight: 700,
+};
+
+const COURIER_NAME: CSSProperties = {
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 const LOGOUT = (compact: boolean): CSSProperties => ({
@@ -153,7 +188,7 @@ const LOGOUT_HOVER: CSSProperties = {
  * Top chrome bar: canteen brand + logout action.
  * Shared across the whole Delivery Dashboard page.
  */
-export default function Header({ canteenName, onLogout }: HeaderProps) {
+export default function Header({ canteenName, courierName, onLogout }: HeaderProps) {
   const compact = useMediaQuery("(max-width: 640px)");
   const [hoverLogout, setHoverLogout] = useState(false);
 
@@ -161,7 +196,7 @@ export default function Header({ canteenName, onLogout }: HeaderProps) {
     <header style={HEADER(compact)}>
       <div style={BRAND}>
         <div style={mark(compact)} aria-hidden="true">
-          <Bike size={compact ? 21 : 23} strokeWidth={1.9} />
+          <Truck size={compact ? 20 : 22} strokeWidth={1.9} />
         </div>
         <div style={COPY}>
           <h1 style={NAME(compact)} title={canteenName}>
@@ -172,6 +207,15 @@ export default function Header({ canteenName, onLogout }: HeaderProps) {
       </div>
 
       {!compact && <RouteEcho />}
+
+      {courierName && (
+        <span style={COURIER_PILL} title={courierName}>
+          <span style={COURIER_AVATAR} aria-hidden="true">
+            {courierName.trim().charAt(0).toUpperCase()}
+          </span>
+          {!compact && <span style={COURIER_NAME}>{courierName}</span>}
+        </span>
+      )}
 
       <button
         type="button"

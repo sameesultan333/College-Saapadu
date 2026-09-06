@@ -474,6 +474,16 @@ export default function AdminLogin({ onLogin, notice, imageSrc = `${process.env.
         return;
       }
 
+      // A valid phone + password only proves who the account is, not that
+      // it belongs in this portal -- a Delivery account is scoped to
+      // pickup/handoff, not kitchen operations. Reject it here rather than
+      // letting it land on a dashboard that then just fails to load data.
+      if (data.role !== "manager" && data.role !== "staff") {
+        setError("This account cannot access the admin dashboard.");
+        setLoading(false);
+        return;
+      }
+
       const session: AuthSession = {
         access_token: data.access_token,
         refresh_token: data.refresh_token,
