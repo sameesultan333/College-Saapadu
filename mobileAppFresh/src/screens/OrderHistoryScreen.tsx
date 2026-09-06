@@ -75,7 +75,10 @@ function formatDate(value: string): string {
 }
 
 // ─── Order card ─────────────────────────────────────────
-function OrderCard({ order, onReorder }: { order: HistoryOrder; onReorder: (order: HistoryOrder) => void }) {
+// Memoized so pull-to-refresh and other parent state changes don't
+// re-render every card in the history list; each card keeps its own
+// expand/collapse state, which React.memo preserves.
+const OrderCard = React.memo(function OrderCard({ order, onReorder }: { order: HistoryOrder; onReorder: (order: HistoryOrder) => void }) {
   const [expanded, setExpanded] = useState(false);
   const totalItems = order.items.reduce((s, i) => s + i.quantity, 0);
   const visibleItems = expanded ? order.items : order.items.slice(0, 2);
@@ -135,7 +138,7 @@ function OrderCard({ order, onReorder }: { order: HistoryOrder; onReorder: (orde
       </View>
     </View>
   );
-}
+});
 
 // ─── Empty state ────────────────────────────────────────
 function EmptyState({ onExplore }: { onExplore: () => void }) {

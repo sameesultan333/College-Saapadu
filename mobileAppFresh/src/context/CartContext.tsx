@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo, ReactNode } from "react";
+import React, { createContext, useCallback, useContext, useState, useMemo, ReactNode } from "react";
 import type { CartContextValue, CartGroup, CartItemInput } from "../types/cart";
 
 export const CartContext = createContext<CartContextValue | null>(null);
@@ -7,7 +7,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // cart structure: { [canteenId]: { canteenId, canteenName, items: [...] } }
   const [cart, setCart] = useState<Record<number, CartGroup>>({});
 
-  const addToCart = (item: CartItemInput) => {
+  // Every function below is wrapped in useCallback and the provider's
+  // context value is memoized (bottom of this function) so that a cart
+  // mutation only re-renders the screens that actually read the piece of
+  // state that changed, instead of every useCart() consumer in the app
+  // re-rendering because the context value was a brand-new object/set of
+  // functions on every CartProvider render.
+  const addToCart = useCallback((item: CartItemInput) => {
     setCart((prev) => {
       const cid = item.canteenId;
 
@@ -32,9 +38,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         },
       };
     });
-  };
+  }, []);
 
-  const removeFromCart = (itemId: number, canteenId: number) => {
+  const removeFromCart = useCallback((itemId: number, canteenId: number) => {
     setCart((prev) => {
       const canteenCart = prev[canteenId];
       if (!canteenCart) return prev;
@@ -57,9 +63,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         [canteenId]: { ...canteenCart, items: updatedItems },
       };
     });
-  };
+  }, []);
 
-  const clearCart = () => setCart({});
+  const clearCart = useCallback(() => setCart({}), []);
 
   const cartGroups = useMemo(() => Object.values(cart), [cart]);
 
@@ -75,26 +81,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [cartItems]
   );
 
-  const getItemQty = (itemId: number, canteenId: number) =>
-    cart[canteenId]?.items.find((i) => i.id === itemId)?.qty || 0;
-
-  return (
-    <CartContext.Provider
-      value={{
-        cart,
-        cartGroups,
-        cartItems,
-        totalAmount,
-        totalItemsCount,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        getItemQty,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+  const getItemQty = useCallback(
+    (itemId: number, canteenId: number) =>
+      cart[canteenId]?.items.find((i) => i.id === itemId)?.qty || 0,
+    [cart]
   );
+
+  const value = useMemo<CartContextValue>(
+    () => ({
+      cart,
+      cartGroups,
+      cartItems,
+      totalAmount,
+      totalItemsCount,
+      addToCart,
+      removeFromCart,
+      clearCart,
+      getItemQty,
+    }),
+    [cart, cartGroups, cartItems, totalAmount, totalItemsCount, addToCart, removeFromCart, clearCart, getItemQty]
+  );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart(): CartContextValue {

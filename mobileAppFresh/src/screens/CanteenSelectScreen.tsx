@@ -68,14 +68,22 @@ const GLYPHS = [Utensils, Soup, Leaf, Coffee];
 const getGlyph = (id: number) => GLYPHS[(id - 1) % GLYPHS.length];
 
 // ─── Canteen list card ─────────────────────────────────
-function CanteenCard({ item, onPress }: { item: Canteen; onPress: () => void }) {
+// Memoized: the screen re-renders once a minute purely to recompute the
+// "Closing in N min" pill against the current clock, and again on every
+// background refresh. Without this, every card in the list re-rendered on
+// each of those ticks even when its own canteen data hadn't changed.
+// onPress takes the item rather than being a pre-bound closure so the
+// parent can pass ONE stable handler for the whole list -- an inline
+// `() => navigate(...)` per row would hand every card a new prop identity
+// on each render and defeat the memo entirely.
+const CanteenCard = React.memo(function CanteenCard({ item, onPress }: { item: Canteen; onPress: (item: Canteen) => void }) {
   const dim = !item.is_active;
   const Glyph = getGlyph(item.id);
   const closingInMinutes = minutesUntilClosing(item.is_active, item.closes_at);
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => onPress(item)}
       style={({ pressed }) => [
         S.card,
         { backgroundColor: dim ? "#FCFBF9" : C.surface, borderColor: dim ? "#EAE8E3" : C.border },
@@ -116,7 +124,7 @@ function CanteenCard({ item, onPress }: { item: Canteen; onPress: () => void }) 
       </View>
     </Pressable>
   );
-}
+});
 
 // ════════════════════════════════════════════════════════════════
 // MAIN SCREEN
@@ -217,12 +225,20 @@ export default function CanteenSelectScreen({ navigation }: Props) {
   );
   const openCount = useMemo(() => canteens.filter((c) => c.is_active).length, [canteens]);
 
-  const renderCard = useCallback(({ item }: ListRenderItemInfo<Canteen>) => (
-    <CanteenCard
-      item={item}
-      onPress={() => navigation.navigate("MenuPageScreen", { canteenId: item.id, canteenName: item.name, canteenIsActive: item.is_active })}
-    />
-  ), [navigation]);
+  const openCanteen = useCallback(
+    (canteen: Canteen) =>
+      navigation.navigate("MenuPageScreen", {
+        canteenId: canteen.id,
+        canteenName: canteen.name,
+        canteenIsActive: canteen.is_active,
+      }),
+    [navigation]
+  );
+
+  const renderCard = useCallback(
+    ({ item }: ListRenderItemInfo<Canteen>) => <CanteenCard item={item} onPress={openCanteen} />,
+    [openCanteen]
+  );
 
   return (
     <AppLayout navigation={navigation} headerBar={false}>

@@ -71,6 +71,11 @@ function NotifBanner({ msg, type }: { msg: string; type: "error" | "warning" }) 
   );
 }
 
+// Hoisted so FlatList's ItemSeparatorComponent prop keeps one stable
+// identity -- an inline arrow here is a brand-new component type on every
+// render, which forces FlatList to remount every separator.
+const ItemSeparator = () => <View style={[S.hairline, { backgroundColor: C.borderLight }]} />;
+
 // ─── Filter chip ───────────────────────────────────────
 function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
@@ -85,7 +90,12 @@ function Chip({ label, active, onPress }: { label: string; active: boolean; onPr
 }
 
 // ─── Menu item row ─────────────────────────────────────
-function MenuRow({
+// Memoized: a menu can have hundreds of items, and without this every row
+// re-renders whenever ANY item's stock changes (e.g. a WebSocket
+// STOCK_UPDATE for one dish) because the `menu` array/`filtered` array gets
+// a new reference. With React.memo + stable onAdd/onRemove/qty, only the
+// row(s) whose own props actually changed re-render.
+const MenuRow = React.memo(function MenuRow({
   item, qty, onAdd, onRemove,
 }: { item: MenuItem; qty: number; onAdd: (item: MenuItem) => void; onRemove: (id: number) => void }) {
   const outOfStock = item.stock === 0;
@@ -138,7 +148,7 @@ function MenuRow({
       </View>
     </View>
   );
-}
+});
 
 // ─── Floating cart bar ─────────────────────────────────
 // Was a single flat pill with two plain text values -- easy to miss as a
@@ -208,7 +218,17 @@ function FloatingCartBar({
 export default function MenuPageScreen({ route, navigation }: Props) {
   const { addToCart, removeFromCart, getItemQty, totalAmount, totalItemsCount } = useCart();
   const { canteenId, canteenName = "Menu", canteenIsActive = true } = route.params ?? ({} as Props["route"]["params"]);
-  const getQty = (id: number) => getItemQty(id, Number(canteenId));
+  // Was a plain arrow function recreated on every render, which meant
+  // handleAdd/renderItem below could never actually stay stable despite
+  // their own useCallback wrapping (a new getQty identity on every render
+  // is a changed dependency). Memoizing it is what lets renderItem's
+  // identity actually stay stable across unrelated re-renders (search
+  // typing, filter chips, WS stock ticks), which is what lets FlatList
+  // avoid re-rendering every row on those actions.
+  const getQty = useCallback(
+    (id: number) => getItemQty(id, Number(canteenId)),
+    [getItemQty, canteenId]
+  );
 
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -286,11 +306,11 @@ export default function MenuPageScreen({ route, navigation }: Props) {
       id: item.id, name: item.name, price: item.price, is_veg: item.is_veg,
       image_url: item.image_url, canteenId: Number(canteenId), canteenName,
     });
-  }, [getQty, canteenId, canteenName, canteenIsActive]);
+  }, [getQty, canteenId, canteenName, canteenIsActive, addToCart, showNotif]);
 
   const handleRemove = useCallback((itemId: number) => {
     removeFromCart(itemId, Number(canteenId));
-  }, [canteenId]);
+  }, [canteenId, removeFromCart]);
 
   const renderItem = useCallback(({ item }: ListRenderItemInfo<MenuItem>) => (
     <MenuRow item={item} qty={getQty(item.id)} onAdd={handleAdd} onRemove={handleRemove} />
@@ -359,7 +379,11 @@ export default function MenuPageScreen({ route, navigation }: Props) {
             showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             onRefresh={onRefresh}
-            ItemSeparatorComponent={() => <View style={[S.hairline, { backgroundColor: C.borderLight }]} />}
+            ItemSeparatorComponent={ItemSeparator}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={7}
+            removeClippedSubviews={Platform.OS === "android"}
           />
         )}
 
