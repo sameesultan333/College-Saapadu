@@ -22,7 +22,9 @@ def _get_canteen_or_404(db: Session, canteen_id: int) -> Canteen:
     return canteen
 
 
-# Create menu item (Manager only)
+# Create menu item (Manager or Staff, scoped to their own canteen --
+# assert_canteen_in_scope below enforces that: Manager can add to any
+# canteen in their college, Staff only to their one assigned canteen).
 @router.post("/create")
 def create_menu_item(
     name: str,
@@ -39,9 +41,6 @@ def create_menu_item(
 
     if gst_rate < 0 or gst_rate > 100:
         raise HTTPException(status_code=400, detail="gst_rate must be between 0 and 100")
-
-    if account.role != "manager":
-        raise HTTPException(status_code=403, detail="Manager access required")
 
     assert_canteen_in_scope(account, canteen.college_id, canteen.id)
 

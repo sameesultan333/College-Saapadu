@@ -493,7 +493,7 @@ export default function StockTab({
                 formatCurrency={formatCurrency}
                 onStockUpdate={onStockUpdate}
                 onDelete={onDeleteItem}
-                canDelete={canAddItem}
+                canDelete={canAddItem && !!onDeleteItem}
               />
             </div>
           ))}

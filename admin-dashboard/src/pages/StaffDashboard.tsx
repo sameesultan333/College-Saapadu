@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { FormEvent } from "react";
 import { BellRing, History, LayoutDashboard, Package, UserRound } from "lucide-react";
 
 import { WS } from "../config/api";
@@ -22,7 +23,8 @@ import {
 } from "../modules/orders/orderService";
 
 import StockTab from "../modules/menu/StockTab";
-import { fetchMenu, updateStock as updateStockRequest } from "../modules/menu/menuService";
+import { fetchMenu, addMenuItem, updateStock as updateStockRequest } from "../modules/menu/menuService";
+import AddMenuModal from "../modules/menu/AddMenuModal";
 import EditCanteenModal from "../modules/canteens/EditCanteenModal";
 import { Canteen, fetchCanteensAdmin } from "../modules/canteens/canteenService";
 
@@ -31,6 +33,7 @@ import type {
   CanteenStats,
   HistoryEntry,
   MenuItem,
+  NewMenuItemForm,
   Order,
   OrderStatus,
 } from "../types";
@@ -153,6 +156,15 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
   const [loadingCanteenEdit, setLoadingCanteenEdit] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [wsConnected, setWsConnected] = useState(false);
+  const [showAddMenuModal, setShowAddMenuModal] = useState(false);
+  const [newItem, setNewItem] = useState<NewMenuItemForm>({
+    name: "",
+    price: "",
+    stock: "",
+    is_veg: true,
+    prep_type: "RA",
+    gst_rate: "5",
+  });
 
   const stockTimeouts = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
   const newOrderAlertTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -244,6 +256,49 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
     },
     [confirmingPaymentId, fetchAll]
   );
+
+  // Staff can now add new menu items too, same as Manager -- backend
+  // already allowed this (POST /menu/create is require_staff_or_manager,
+  // scoped to the staff's own assigned canteen); only this dashboard's
+  // canAddItem={false} was withholding it from the UI.
+  const handleAddMenuItem = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    if (!newItem.name || !newItem.price || !newItem.stock) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      const response = await addMenuItem({
+        name: newItem.name,
+        price: newItem.price,
+        stock: newItem.stock,
+        canteenId: canteenId,
+        isVeg: newItem.is_veg,
+        prepType: newItem.prep_type,
+        gstRate: newItem.gst_rate,
+      });
+
+      if (response.ok) {
+        setShowAddMenuModal(false);
+        setNewItem({
+          name: "",
+          price: "",
+          stock: "",
+          is_veg: true,
+          prep_type: "RA",
+          gst_rate: "5",
+        });
+        void fetchAll();
+      } else {
+        const error = (await response.json()) as { detail?: string };
+        alert(error.detail || "Failed to add menu item");
+      }
+    } catch (error) {
+      console.error("Error adding menu item:", error);
+      alert("Failed to add menu item");
+    }
+  };
 
   const handleStockUpdate = (id: number, stock: string): void => {
     if (stockTimeouts.current[id]) {
@@ -463,7 +518,13 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
           )}
 
           {activeTab === "stock" && (
-            <StockTab menu={menu} formatCurrency={formatCurrency} onStockUpdate={handleStockUpdate} canAddItem={false} />
+            <StockTab
+              menu={menu}
+              formatCurrency={formatCurrency}
+              onStockUpdate={handleStockUpdate}
+              onAddNewItem={() => setShowAddMenuModal(true)}
+              canAddItem
+            />
           )}
 
           {activeTab === "history" && (
@@ -561,6 +622,15 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
           canteen={editingCanteen}
           onClose={() => setEditingCanteen(null)}
           onUpdated={(updated) => setEditingCanteen(updated)}
+        />
+      )}
+
+      {showAddMenuModal && (
+        <AddMenuModal
+          newItem={newItem}
+          onChange={setNewItem}
+          onClose={() => setShowAddMenuModal(false)}
+          onSubmit={handleAddMenuItem}
         />
       )}
 
