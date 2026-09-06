@@ -544,7 +544,7 @@ export default function DeliveryLogin({ onLogin }: DeliveryLoginProps) {
               ? STRIP
               : {
                   ...STRIP,
-                  padding: "var(--bc-space-16)",
+                  padding: "var(--bc-space-16) var(--bc-space-20)",
                   flexWrap: "wrap",
                 }
           }
@@ -565,7 +565,7 @@ export default function DeliveryLogin({ onLogin }: DeliveryLoginProps) {
         </div>
 
         {/* Ticket body */}
-        <div style={wide ? BODY : { ...BODY, padding: "var(--bc-space-28) var(--bc-space-20) var(--bc-space-24)" }}>
+        <div style={wide ? BODY : { ...BODY, padding: "var(--bc-space-24) var(--bc-space-20) var(--bc-space-24)" }}>
           <h1 style={HEADLINE}>Start your shift</h1>
           <p style={SUB}>Check in to pick up today&apos;s route from your canteen.</p>
 
