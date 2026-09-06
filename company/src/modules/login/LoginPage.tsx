@@ -68,7 +68,7 @@ export default function LoginPage({ onLoggedIn }: LoginPageProps) {
   return (
     <div style={AUTH_PAGE}>
       <form style={AUTH_CARD} onSubmit={handleSubmit} autoComplete="off">
-        <p style={AUTH_WORDMARK}>College Saapadu</p>
+        <p style={AUTH_WORDMARK}>College Saapaadu</p>
         <p style={AUTH_CONTEXT}>Company Console</p>
         <hr style={AUTH_RULE} />
 

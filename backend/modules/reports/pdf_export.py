@@ -92,11 +92,11 @@ def build_college_report_pdf(report: dict) -> bytes:
         leftMargin=14 * mm, rightMargin=14 * mm,
         topMargin=13 * mm, bottomMargin=13 * mm,
         title=f"Daily Sales & GST Report (All Canteens) - {report['report_date']}",
-        author="College Saapadu",
+        author="College Saapaadu",
     )
 
     el = []
-    el.append(Paragraph("COLLEGE SAAPADU", st["org"]))
+    el.append(Paragraph("COLLEGE SAAPAADU", st["org"]))
     el.append(Paragraph("Daily Sales &amp; GST Report - All Canteens", st["doc"]))
 
     meta = [
@@ -249,11 +249,11 @@ def build_daily_report_pdf(report: dict) -> bytes:
         leftMargin=14 * mm, rightMargin=14 * mm,
         topMargin=13 * mm, bottomMargin=13 * mm,
         title=f"Daily Sales & GST Report - {report['report_date']}",
-        author="College Saapadu",
+        author="College Saapaadu",
     )
 
     el = []
-    el.append(Paragraph("COLLEGE SAAPADU", st["org"]))
+    el.append(Paragraph("COLLEGE SAAPAADU", st["org"]))
     el.append(Paragraph("Daily Sales &amp; GST Report", st["doc"]))
 
     meta = [

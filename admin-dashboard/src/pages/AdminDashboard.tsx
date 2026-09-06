@@ -761,7 +761,7 @@ export default function AdminDashboard({ canteenId, canteenName, onBack, onLogou
 
       {initializing ? (
         <div className="adb-boot" role="status" aria-live="polite">
-          <p className="adb-boot-eyebrow">College Saapadu</p>
+          <p className="adb-boot-eyebrow">College Saapaadu</p>
           <h2 className="adb-boot-title">Setting up your kitchen</h2>
           <p className="adb-boot-sub">Syncing orders, menu and stock…</p>
           <span className="adb-boot-bar" aria-hidden="true" />

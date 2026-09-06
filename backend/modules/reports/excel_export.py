@@ -56,7 +56,7 @@ def build_college_report_excel(report: dict) -> bytes:
     # ---------------- Canteen Summary ----------------
     ws = wb.active
     ws.title = "Canteen Summary"
-    ws["A1"] = "COLLEGE SAAPADU - Daily Sales & GST Report (All Canteens)"
+    ws["A1"] = "COLLEGE SAAPAADU - Daily Sales & GST Report (All Canteens)"
     ws["A1"].font = Font(bold=True, size=13)
 
     meta = [
@@ -176,7 +176,7 @@ def build_daily_report_excel(report: dict) -> bytes:
     ws.title = "Summary"
     t = report["totals"]
 
-    ws["A1"] = "COLLEGE SAAPADU - Daily Sales & GST Report"
+    ws["A1"] = "COLLEGE SAAPAADU - Daily Sales & GST Report"
     ws["A1"].font = Font(bold=True, size=13)
 
     meta = [

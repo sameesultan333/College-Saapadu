@@ -47,7 +47,7 @@ export default function Layout({ admin, activeTab, onTabChange, onLogout, childr
       <div style={FRAME}>
         <header style={MAST}>
           <div>
-            <p style={WORDMARK}>College Saapadu</p>
+            <p style={WORDMARK}>College Saapaadu</p>
             <p style={MAST_CONTEXT}>Company Console</p>
           </div>
 

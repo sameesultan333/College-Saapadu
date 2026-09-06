@@ -51,7 +51,7 @@ export default function Header({ onProfileClick, title, showBack, navigation }: 
             </View>
           )}
 
-          <Text style={S.title} numberOfLines={1}>{title || "College Saapadu"}</Text>
+          <Text style={S.title} numberOfLines={1}>{title || "College Saapaadu"}</Text>
         </View>
 
         {user && (

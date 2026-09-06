@@ -386,7 +386,7 @@ export default function OrderReceiptModal({ order, onClose, onMarkReady, onStart
           </button>
 
           {/* Letterhead */}
-          <p style={BRAND_LINE}>College Saapadu</p>
+          <p style={BRAND_LINE}>College Saapaadu</p>
           {order.canteen_name && <p style={CANTEEN_LINE}>{order.canteen_name}</p>}
 
           <hr style={RULE} />

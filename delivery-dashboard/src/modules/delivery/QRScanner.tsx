@@ -279,35 +279,36 @@ export default function QRScanner({ selectedOrder, onVerified, onClose }: QRScan
   useEffect(() => {
     if (!selectedOrder) return;
 
+    // Guards the async permission/stream setup below: if the scanner is
+    // closed or selectedOrder changes again while getUserMedia() is still
+    // pending (the user hasn't answered the permission prompt yet), this
+    // stops the callback from touching state after unmount and makes sure
+    // a stream that arrives after cancellation is released immediately
+    // instead of leaking a second camera stream on reopen.
+    let cancelled = false;
     const reader = new BrowserMultiFormatReader();
 
     const start = async () => {
+      const videoElement = videoRef.current;
+      if (!videoElement) {
+        setStatus("Camera unavailable or permission denied");
+        return;
+      }
+
+      setStatus("Requesting camera access...");
+
       try {
-        const devices = await BrowserMultiFormatReader.listVideoInputDevices();
-        const preferredDevice =
-          devices.find((device) => /back|rear|environment/i.test(device.label)) ||
-          devices[devices.length - 1] ||
-          devices[0];
-        const camId = preferredDevice?.deviceId;
-
-        if (!camId) {
-          setStatus("No camera found");
-          return;
-        }
-
-        const videoElement = videoRef.current;
-        if (!videoElement) {
-          setStatus("Camera unavailable or permission denied");
-          return;
-        }
-
-        setStatus("Scanning QR...");
-
-        const resultOrPromise = reader.decodeFromVideoDevice(
-          camId,
+        // Request the camera directly via constraints instead of
+        // enumerating devices first -- see the stopScanner/effect cleanup
+        // below for why listVideoInputDevices() doesn't work here.
+        // { ideal: "environment" } prefers the rear camera on phones but
+        // still falls back to whatever camera exists (e.g. a laptop
+        // webcam) instead of hard-failing with OverconstrainedError.
+        const controls = await reader.decodeFromConstraints(
+          { video: { facingMode: { ideal: "environment" } }, audio: false },
           videoElement,
           async (result) => {
-            if (!result || scannedRef.current) return;
+            if (!result || scannedRef.current || cancelled) return;
             scannedRef.current = true;
 
             // The scanner does NOT decide anything. It posts exactly what
@@ -371,21 +372,36 @@ export default function QRScanner({ selectedOrder, onVerified, onClose }: QRScan
           }
         );
 
-        if (resultOrPromise && typeof resultOrPromise.then === "function") {
-          resultOrPromise.then((controls: { stop: () => void }) => {
-            controlsRef.current = controls;
-          }).catch(e => console.error("Scanner Error:", e));
-        } else {
-          controlsRef.current = resultOrPromise as unknown as { stop: () => void };
+        if (cancelled) {
+          // The scanner was closed/reopened while the permission prompt
+          // was still pending -- this stream belongs to a stale attempt,
+          // release it immediately instead of leaking a second camera.
+          controls.stop();
+          return;
         }
-      } catch {
-        setStatus("Camera unavailable or permission denied");
+
+        controlsRef.current = controls;
+        setStatus("Scanning QR...");
+      } catch (err) {
+        if (cancelled) return;
+
+        const name = (err as { name?: string } | null)?.name;
+        if (name === "NotAllowedError" || name === "PermissionDeniedError" || name === "SecurityError") {
+          setStatus("Camera permission denied. Allow camera access and try again.");
+        } else if (name === "NotFoundError" || name === "OverconstrainedError") {
+          setStatus("No camera found on this device.");
+        } else if (name === "NotReadableError" || name === "TrackStartError") {
+          setStatus("Camera is already in use by another app.");
+        } else {
+          setStatus("Camera unavailable or permission denied");
+        }
       }
     };
 
     start();
 
     return () => {
+      cancelled = true;
       stopScanner();
       scannedRef.current = false;
     };

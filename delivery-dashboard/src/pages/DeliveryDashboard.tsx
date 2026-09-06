@@ -144,7 +144,7 @@ function BootScreen() {
       <span style={BOOT.mark} aria-hidden="true">
         <Bike size={22} strokeWidth={1.9} />
       </span>
-      <p style={BOOT.eyebrow}>College Saapadu · Delivery</p>
+      <p style={BOOT.eyebrow}>College Saapaadu · Delivery</p>
       <h2 style={BOOT.title}>Preparing your route</h2>
       <p style={BOOT.sub}>Syncing today&apos;s orders from the kitchen…</p>
       <BootBar />

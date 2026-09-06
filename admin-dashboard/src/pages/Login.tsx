@@ -523,7 +523,7 @@ export default function AdminLogin({ onLogin, notice, imageSrc = `${process.env.
           <Sprig />
         </svg>
       </div>
-      <span style={WORDMARK_TEXT}>COLLEGE SAAPADU</span>
+      <span style={WORDMARK_TEXT}>COLLEGE SAAPAADU</span>
     </div>
   );
 

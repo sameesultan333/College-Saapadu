@@ -98,7 +98,7 @@ export default function LoginScreen({ navigation }: Props) {
           <Animated.View style={[S.card, { opacity: fade, transform: [{ translateY: slide }] }]}>
             <View style={S.brandRow}>
               <Image source={require("../assets/logo.png")} style={S.brandTile} resizeMode="contain" />
-              <Text style={S.brandName}>College Saapadu</Text>
+              <Text style={S.brandName}>College Saapaadu</Text>
             </View>
 
             <Text style={S.title}>Welcome back</Text>

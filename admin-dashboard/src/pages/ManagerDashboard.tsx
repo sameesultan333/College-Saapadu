@@ -228,7 +228,7 @@ export default function ManagerDashboard({ onLogout }: ManagerDashboardProps) {
         onSelectTab={handleSelectTab}
       >
         <div style={BOOT.root} role="status" aria-live="polite">
-          <p style={BOOT.eyebrow}>College Saapadu</p>
+          <p style={BOOT.eyebrow}>College Saapaadu</p>
           <h2 style={BOOT.title}>Preparing your workspace</h2>
           <p style={BOOT.sub}>Loading canteens, staff accounts and reports…</p>
           <BootBar />

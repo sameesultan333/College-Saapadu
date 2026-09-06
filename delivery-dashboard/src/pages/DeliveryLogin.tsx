@@ -195,6 +195,9 @@ const STRIP_NAME: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "var(--bc-letter-spacing-tight)",
   color: "var(--bc-color-text-primary)",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 };
 const STRIP_SUB: CSSProperties = {
   fontSize: "var(--bc-font-size-eyebrow)",
@@ -225,12 +228,12 @@ const BODY: CSSProperties = { padding: "var(--bc-space-40) var(--bc-space-40) va
 
 const HEADLINE: CSSProperties = {
   margin: 0,
-  paddingRight: "var(--bc-space-8)",
-  fontSize: "clamp(1.55rem, 1.3rem + 1vw, 2rem)",
+  fontSize: "clamp(1.4rem, 1.2rem + 1vw, 2rem)",
   fontWeight: 700,
   letterSpacing: "var(--bc-letter-spacing-tight)",
   lineHeight: "var(--bc-line-height-tight)",
   color: "var(--bc-color-text-primary)",
+  wordBreak: "break-word",
 };
 const SUB: CSSProperties = {
   margin: "var(--bc-space-8) 0 0",
@@ -551,7 +554,7 @@ export default function DeliveryLogin({ onLogin }: DeliveryLoginProps) {
               <Bike size={21} strokeWidth={2} />
             </div>
             <div style={STRIP_COPY}>
-              <span style={STRIP_NAME}>COLLEGE SAAPADU</span>
+              <span style={STRIP_NAME}>COLLEGE SAAPAADU</span>
               <span style={STRIP_SUB}>Delivery Portal</span>
             </div>
           </div>
